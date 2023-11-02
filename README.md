@@ -1,2 +1,2 @@
-# frog-game
-frog
+# Shingo
+shingosniazoid
