@@ -20,6 +20,7 @@ const level = new PIXI.Container(PIXI.Texture.WHITE)
    app.stage.addChild(level)
 
 
+// const baksd = new PIXI.Container(PIXI.Texture.WHITE)
 // const bg = PIXI.Texture.from('src/assets/bg.png')
 // const bgg = new PIXI.Sprite(bg)
 //     bgg.width = 1280
@@ -27,6 +28,18 @@ const level = new PIXI.Container(PIXI.Texture.WHITE)
 //     bgg.x = 0
 //     bgg.y = 0
 //     level.addChild(bgg)
+
+class DKblock {
+    sprite = null
+    touchable = true
+    collectible = false
+    ouchie = false
+    door = null
+
+    constructor(){}
+    onCollision = ()=>{}
+
+}
 
 const terrain = new PIXI.Container(PIXI.Texture.WHITE)
    terrain.x = 0
@@ -89,8 +102,9 @@ var makeblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
     block.height = bh
     block.tint = bc
     terrain.addChild(block)
-
-    blox.push(block)
+    var b = new DKblock()
+    b.sprite = block
+    blox.push(b)
 }
 
 var keyblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
@@ -101,21 +115,26 @@ var keyblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
     kblock.height = bh
     kblock.tint = bc
     terrain.addChild(kblock)
-
-    kox.push(kblock)
+    var b = new DKblock()
+    b.sprite = kblock
+    b.collectible = true
+    b.onCollision = ()=>{}
+    blox.push(b)
 }
 
-var doorblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF,keyindex)=>{
+var doorblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF,key)=>{
     const dblock = new PIXI.Sprite(PIXI.Texture.WHITE)
     dblock.x = bx
     dblock.y = by
     dblock.width = bw
     dblock.height = bh
     dblock.tint = bc
-    dblock.key = keyindex
-    terrain.addChild(dblock)
 
-    dox.push(dblock)
+    terrain.addChild(dblock)
+    var b = new DKblock()
+    b.sprite = dblock
+    key.door = b
+    blox.push(b)
 }
 
 var spikeblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
@@ -126,14 +145,13 @@ var spikeblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
     sblock.height = bh
     sblock.tint = bc
     terrain.addChild(sblock)
-
-    sox.push(sblock)
+    var b = new DKblock()
+    b.sprite = sblock
+    b.ouchie = true
+    blox.push(b)
 }
 
 var blox = []
-var kox = []
-var dox = []
-var sox = []
 
 //bonkey level
 // makeblock(500-80*2,640,80,80,0xC1FF00)
@@ -191,7 +209,7 @@ window.addEventListener("keydown", function(e) {
    if (e.key == "ArrowUp"){if(movingUp == false){timejumped = Date.now()} ; movingUp = true}
 //   if (e.key == "r"){unloadlevel()}
 //   if (e.key == "q"){loadlevel()}
-    if (e.key == "r"){unloadlevel() ; loadlevel() ; frog.x = 50 ; frog.y = 670}
+    if (e.key == "r"){reloadlevel()}
 
 })
 // if(movingUp == false){timejumped = Date.now()}
@@ -251,17 +269,6 @@ app.ticker.add((delta) => {
         wis(b)
     });
 
-    kox.forEach(kb => {
-        nowis(kb)
-    });
-
-   dox.forEach(db => {
-       lois(db)
-   });
-
-   sox.forEach(sb => {
-        OHNOis(sb)
-   });
 
    
    
@@ -302,14 +309,14 @@ var jumpy = ()=>{
 
     if ((Date.now()-timejumped) < 500){canjumpy = false}
     else {canjumpy = true}
-    //console.log(Date.now()-timejumped)
 }
 
 var wis = (block)=>{
-    var blockright = Math.abs(frog.x - block.x - block.width)
-    var blockleft = Math.abs(frog.x + frog.width - block.x)
-    var blockbottom = Math.abs(frog.y - block.y - block.height)
-    var blocktop = Math.abs(frog.y + frog.width - block.y)
+    var s = block.sprite
+    var blockright = Math.abs(frog.x - s.x - s.width)
+    var blockleft = Math.abs(frog.x + frog.width - s.x)
+    var blockbottom = Math.abs(frog.y - s.y - s.height)
+    var blocktop = Math.abs(frog.y + frog.width - s.y)
     var sidez = [blockright, blockleft, blockbottom, blocktop]
     
     var mincollision = 0
@@ -318,65 +325,29 @@ var wis = (block)=>{
     if (blocktop < sidez[mincollision]){mincollision = 3}
 
     
-    if (frog.x < block.x + block.width &&
-        frog.x + frog.width > block.x &&
-        frog.y < block.y + block.height &&
-        frog.y + frog.width > block.y)
+    if (frog.x < s.x + s.width &&
+        frog.x + frog.width > s.x &&
+        frog.y < s.y + s.height &&
+        frog.y + frog.width > s.y)
         
         {
-            if (mincollision == 0){frog.x = block.x + block.width}
-            if (mincollision == 1){frog.x = block.x - frog.width}
-            if (mincollision == 2){frog.y = block.y + block.height ; if (speedY > 0){speedY = -(0.5 * speedY)}}
-            if (mincollision == 3){frog.y = block.y - frog.height ; if (speedY < 0){speedY = 0} ; if (speedY == 0 && movingUp){jumpy()}}
+            block.onCollision()
+            if (block.ouchie){reloadlevel()}
+            if (block.collectible){s.y = 800}
+            if (block.door != null){block.door.sprite.y = 800}
+            if (block.touchable){
+                if (mincollision == 0){frog.x = s.x + s.width}
+                if (mincollision == 1){frog.x = s.x - frog.width}
+                if (mincollision == 2){frog.y = s.y + s.height ; if (speedY > 0){speedY = -(0.5 * speedY)}}
+                if (mincollision == 3){frog.y = s.y - frog.height ; if (speedY < 0){speedY = 0} ; if (speedY == 0 && movingUp){jumpy()}}
+            }
         }
 }
 
-var nowis = (kblock)=>{
-    
-    if (frog.x < kblock.x + kblock.width &&
-        frog.x + frog.width > kblock.x &&
-        frog.y < kblock.y + kblock.height &&
-        frog.y + frog.width > kblock.y)
-        {kblock.y = 800}
-}
 
-var lois = (dblock)=>{
-    var blockright = Math.abs(frog.x - dblock.x - dblock.width)
-    var blockleft = Math.abs(frog.x + frog.width - dblock.x)
-    var blockbottom = Math.abs(frog.y - dblock.y - dblock.height)
-    var blocktop = Math.abs(frog.y + frog.width - dblock.y)
-    var sidez = [blockright, blockleft, blockbottom, blocktop]
-    
-    var mincollision = 0
-    if (blockleft < sidez[mincollision]){mincollision = 1}
-    if (blockbottom < sidez[mincollision]){mincollision = 2}
-    if (blocktop < sidez[mincollision]){mincollision = 3}
-
-    if (frog.x < dblock.x + dblock.width &&
-        frog.x + frog.width > dblock.x &&
-        frog.y < dblock.y + dblock.height &&
-        frog.y + frog.width > dblock.y
-        )
-        {
-            if (mincollision == 0){frog.x = dblock.x + dblock.width}
-            if (mincollision == 1){frog.x = dblock.x - frog.width}
-            if (mincollision == 2){frog.y = dblock.y + dblock.height ; if (speedY > 0){speedY = -(0.5 * speedY)}}
-            if (mincollision == 3){frog.y = dblock.y - frog.height ; if (speedY < 0){speedY = 0} ; if (speedY == 0 && movingUp){jumpy()}}
-        }
-    else if (dblock.key.y == 800)   {dblock.y = 800}
-    
-}
-
-var OHNOis = (sblock)=>{
-
-    if (frog.x < sblock.x + sblock.width &&
-        frog.x + frog.width > sblock.x &&
-        frog.y < sblock.y + sblock.height &&
-        frog.y + frog.width > sblock.y
-        ) {unloadlevel() ; loadlevel() ; frog.x = 50 ; frog.y = 670}
-}
 
 var loadlevel = ()=>{
+    
     // floor/wall
     makeblock(0,670,10000,100,0x000000)
     makeblock(0,30,50,1500,0x000000)
@@ -413,7 +384,7 @@ var loadlevel = ()=>{
     makeblock(2370,330,400,20,0xB900FF)
     makeblock(2770,250,80,420,0xB900FF)
     keyblock(2715,575,30,30,0xFFD500)
-    doorblock(2290,330,80,20,0x2700FF,kox[0])
+    doorblock(2290,330,80,20,0x2700FF,blox[blox.length-1])
     makeblock(3170,250,80,420,0xB900FF)
     makeblock(3570,250,80,420,0xB900FF)
     makeblock(3970,250,80,420,0xB900FF)
@@ -454,7 +425,8 @@ terrain.children = []
 blox = []
 kox = []
 dox = []
-
-
 }
 
+var reloadlevel = ()=>{
+    unloadlevel() ; loadlevel() ; frog.x = 50 ; frog.y = 670 ; speedY = 0
+}
