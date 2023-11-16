@@ -35,7 +35,8 @@ class DKblock {
     collectible = false
     ouchie = false
     door = null
-    bounce = false
+    launch = false
+    flip = false
 
     constructor(){}
     onCollision = ()=>{}
@@ -103,6 +104,7 @@ var makeblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
     block.height = bh
     block.tint = bc
     terrain.addChild(block)
+    
     var b = new DKblock()
     b.sprite = block
     blox.push(b)
@@ -116,10 +118,12 @@ var keyblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
     kblock.height = bh
     kblock.tint = bc
     terrain.addChild(kblock)
+
     var b = new DKblock()
     b.sprite = kblock
     b.collectible = true
-    b.onCollision = ()=>{}
+    b.touchable = false
+
     blox.push(b)
 }
 
@@ -130,11 +134,12 @@ var doorblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF,key)=>{
     dblock.width = bw
     dblock.height = bh
     dblock.tint = bc
-
     terrain.addChild(dblock)
+
     var b = new DKblock()
     b.sprite = dblock
     key.door = b
+
     blox.push(b)
 }
 
@@ -146,9 +151,11 @@ var spikeblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
     sblock.height = bh
     sblock.tint = bc
     terrain.addChild(sblock)
+
     var b = new DKblock()
     b.sprite = sblock
     b.ouchie = true
+
     blox.push(b)
 }
 
@@ -160,12 +167,32 @@ var bounceblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
     bblock.height = bh
     bblock.tint = bc
     terrain.addChild(bblock)
+
     var b = new DKblock()
     b.sprite = bblock
-    b.bounce = true
+    b.touchable = false
+    b.launch = true
+
     blox.push(b)
 
 }
+
+var gravityblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
+    const gblock = new PIXI.Sprite(PIXI.Texture.WHITE)
+    gblock.x = bx
+    gblock.y = by
+    gblock.width = bw
+    gblock.height = bh
+    gblock.tint = bc
+    terrain.addChild(gblock)
+
+    var b = new DKblock()
+    b.sprite = gblock
+    b.flip = true
+
+    blox.push(b)
+
+} 
 
 var blox = []
 
@@ -327,8 +354,16 @@ var jumpy = ()=>{
     else {canjumpy = true}
 }
 
+var flippedjumpy = ()=>{
+    if (canjumpy == true){speedY = -68 ; timejumped = Date.now()}
+
+    if ((Date.now()-timejumped) < 500){canjumpy = false}
+    else {canjumpy = true}
+}
+
 var wis = (block)=>{
     var s = block.sprite
+
     var blockright = Math.abs(frog.x - s.x - s.width)
     var blockleft = Math.abs(frog.x + frog.width - s.x)
     var blockbottom = Math.abs(frog.y - s.y - s.height)
@@ -351,12 +386,21 @@ var wis = (block)=>{
             if (block.ouchie){reloadlevel()}
             if (block.collectible){s.y = 800}
             if (block.door != null){block.door.sprite.y = 800}
-            if (block.bounce){speedY = 100}
+            if (block.launch){speedY = 100}
+            if (block.flip){accelY = -accelY ; speedY = -0.5 * speedY}
             if (block.touchable){
-                if (mincollision == 0){frog.x = s.x + s.width}
-                if (mincollision == 1){frog.x = s.x - frog.width}
-                if (mincollision == 2){frog.y = s.y + s.height ; if (speedY > 0){speedY = -(0.5 * speedY)}}
-                if (mincollision == 3){frog.y = s.y - frog.height ; if (speedY < 0){speedY = 0} ; if (speedY == 0 && movingUp){jumpy()}}
+                if (accelY < 0){
+                    if (mincollision == 0){frog.x = s.x + s.width}
+                    if (mincollision == 1){frog.x = s.x - frog.width}
+                    if (mincollision == 2){frog.y = s.y + s.height ; if (speedY > 0){speedY = -(0.5 * speedY)}}
+                    if (mincollision == 3){frog.y = s.y - frog.height ; if (speedY < 0){speedY = 0} ; if (speedY == 0 && movingUp){jumpy()}}
+                }
+                else {
+                    if (mincollision == 0){frog.x = s.x + s.width}
+                    if (mincollision == 1){frog.x = s.x - frog.width}
+                    if (mincollision == 2){frog.y = s.y + s.height ; if (speedY > 0){speedY = 0} ; if (speedY == 0 && movingUp){flippedjumpy()}}     
+                    if (mincollision == 3){frog.y = s.y - frog.height ; if (speedY < 0){speedY = -(0.5 * speedY)}}
+                }
             }
         }
 }
@@ -376,7 +420,7 @@ var loadlevel = ()=>{
     makeblock(500,310,80,20,0xB900FF)
     makeblock(800,260,80,20,0xB900FF)
     makeblock(1000,230,80,440,0xB900FF)
-    makeblock(1250,0,80,470,0xB900FF)
+    makeblock(1250,-50,80,520,0xB900FF)
     makeblock(1180,230,70,40,0xB900FF)
     makeblock(1080,450,70,40,0xB900FF)
     makeblock(1250,530,80,140,0xB900FF)
@@ -391,7 +435,12 @@ var loadlevel = ()=>{
     makeblock(2210,30,80,520,0xB900FF)
     makeblock(1890,330,330,20,0xB900FF)
     makeblock(1250,130,170,40,0xB900FF)
+
     bounceblock(1330,120,40,10,0x00FF00)
+    gravityblock(1270,-60,40,10,0xFF9B00)
+    makeblock(1250,-340,1040,40,0xB900FF)
+    gravityblock(2230,-300,40,10,0xFF9B00)
+
     makeblock(1800,430,400-240,20,0xB900FF)
     makeblock(1800+240,430,410-240,20,0xB900FF)
     makeblock(1890,530,330-90,20,0xB900FF)
@@ -446,5 +495,5 @@ dox = []
 }
 
 var reloadlevel = ()=>{
-    unloadlevel() ; loadlevel() ; frog.x = 50 ; frog.y = 670 ; speedY = 0
+    unloadlevel() ; loadlevel() ; frog.x = 50 ; frog.y = 670 ; speedY = 0 ; accelY = -20
 }
