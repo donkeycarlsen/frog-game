@@ -35,6 +35,7 @@ class DKblock {
     collectible = false
     ouchie = false
     door = null
+    bounce = false
 
     constructor(){}
     onCollision = ()=>{}
@@ -149,6 +150,21 @@ var spikeblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
     b.sprite = sblock
     b.ouchie = true
     blox.push(b)
+}
+
+var bounceblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
+    const bblock = new PIXI.Sprite(PIXI.Texture.WHITE)
+    bblock.x = bx
+    bblock.y = by
+    bblock.width = bw
+    bblock.height = bh
+    bblock.tint = bc
+    terrain.addChild(bblock)
+    var b = new DKblock()
+    b.sprite = bblock
+    b.bounce = true
+    blox.push(b)
+
 }
 
 var blox = []
@@ -335,6 +351,7 @@ var wis = (block)=>{
             if (block.ouchie){reloadlevel()}
             if (block.collectible){s.y = 800}
             if (block.door != null){block.door.sprite.y = 800}
+            if (block.bounce){speedY = 100}
             if (block.touchable){
                 if (mincollision == 0){frog.x = s.x + s.width}
                 if (mincollision == 1){frog.x = s.x - frog.width}
@@ -374,6 +391,7 @@ var loadlevel = ()=>{
     makeblock(2210,30,80,520,0xB900FF)
     makeblock(1890,330,330,20,0xB900FF)
     makeblock(1250,130,170,40,0xB900FF)
+    bounceblock(1330,120,40,10,0x00FF00)
     makeblock(1800,430,400-240,20,0xB900FF)
     makeblock(1800+240,430,410-240,20,0xB900FF)
     makeblock(1890,530,330-90,20,0xB900FF)
