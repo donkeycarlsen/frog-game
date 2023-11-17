@@ -36,7 +36,9 @@ class DKblock {
     ouchie = false
     door = null
     launch = false
-    flip = false
+    gravityup = false
+    gravitydown = false
+    // potion = false
 
     constructor(){}
     onCollision = ()=>{}
@@ -177,22 +179,58 @@ var bounceblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
 
 }
 
-var gravityblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
-    const gblock = new PIXI.Sprite(PIXI.Texture.WHITE)
-    gblock.x = bx
-    gblock.y = by
-    gblock.width = bw
-    gblock.height = bh
-    gblock.tint = bc
-    terrain.addChild(gblock)
+var gravityupblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
+    const g1block = new PIXI.Sprite(PIXI.Texture.WHITE)
+    g1block.x = bx
+    g1block.y = by
+    g1block.width = bw
+    g1block.height = bh
+    g1block.tint = bc
+    terrain.addChild(g1block)
 
     var b = new DKblock()
-    b.sprite = gblock
-    b.flip = true
+    b.sprite = g1block
+    b.gravityup = true
+    b.touchable = false
 
     blox.push(b)
 
 } 
+
+var gravitydownblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
+    const g2block = new PIXI.Sprite(PIXI.Texture.WHITE)
+    g2block.x = bx
+    g2block.y = by
+    g2block.width = bw
+    g2block.height = bh
+    g2block.tint = bc
+    terrain.addChild(g2block)
+
+    var b = new DKblock()
+    b.sprite = g2block
+    b.gravitydown = true
+    b.touchable = false
+    blox.push(b)
+
+} 
+
+// var potionpowerup = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
+//     const ppowerup = new PIXI.Sprite(PIXI.Texture.WHITE)
+//     ppowerup.x = bx
+//     ppowerup.y = by
+//     ppowerup.width = bw
+//     ppowerup.height = bh
+//     ppowerup.tint = bc
+//     terrain.addChild(ppowerup)
+
+//     var b = new DKblock()
+//     b.sprite = ppowerup
+//     b.collectible = true
+//     b.touchable = false
+//     b.potion = true
+
+//     blox.push(b)
+
 
 var blox = []
 
@@ -253,6 +291,8 @@ window.addEventListener("keydown", function(e) {
 //   if (e.key == "r"){unloadlevel()}
 //   if (e.key == "q"){loadlevel()}
     if (e.key == "r"){reloadlevel()}
+    if (e.key == "p"){frog.tint = 0xE71C1C}
+    if (e.key == "o"){frog.tint = 0x009600}
 
 })
 // if(movingUp == false){timejumped = Date.now()}
@@ -354,7 +394,7 @@ var jumpy = ()=>{
     else {canjumpy = true}
 }
 
-var flippedjumpy = ()=>{
+var gravityuppedjumpy = ()=>{
     if (canjumpy == true){speedY = -68 ; timejumped = Date.now()}
 
     if ((Date.now()-timejumped) < 500){canjumpy = false}
@@ -387,7 +427,8 @@ var wis = (block)=>{
             if (block.collectible){s.y = 800}
             if (block.door != null){block.door.sprite.y = 800}
             if (block.launch){speedY = 100}
-            if (block.flip){accelY = -accelY ; speedY = -0.5 * speedY}
+            if (block.gravityup){accelY = 20 ; speedY = 45}
+            if (block.gravitydown){accelY = -20 ; speedY = -45}
             if (block.touchable){
                 if (accelY < 0){
                     if (mincollision == 0){frog.x = s.x + s.width}
@@ -398,7 +439,7 @@ var wis = (block)=>{
                 else {
                     if (mincollision == 0){frog.x = s.x + s.width}
                     if (mincollision == 1){frog.x = s.x - frog.width}
-                    if (mincollision == 2){frog.y = s.y + s.height ; if (speedY > 0){speedY = 0} ; if (speedY == 0 && movingUp){flippedjumpy()}}     
+                    if (mincollision == 2){frog.y = s.y + s.height ; if (speedY > 0){speedY = 0} ; if (speedY == 0 && movingUp){gravityuppedjumpy()}}     
                     if (mincollision == 3){frog.y = s.y - frog.height ; if (speedY < 0){speedY = -(0.5 * speedY)}}
                 }
             }
@@ -437,9 +478,9 @@ var loadlevel = ()=>{
     makeblock(1250,130,170,40,0xB900FF)
 
     bounceblock(1330,120,40,10,0x00FF00)
-    gravityblock(1270,-60,40,10,0xFF9B00)
+    gravityupblock(1270,-60,40,10,0xFF9B00)
     makeblock(1250,-340,1040,40,0xB900FF)
-    gravityblock(2230,-300,40,10,0xFF9B00)
+    gravitydownblock(2230,-300,40,10,0xFF9B00)
 
     makeblock(1800,430,400-240,20,0xB900FF)
     makeblock(1800+240,430,410-240,20,0xB900FF)
@@ -482,6 +523,8 @@ var loadlevel = ()=>{
     spikeblock(2850,650,320,20,0xFF0000)
     spikeblock(3250,650,320,20,0xFF0000)
     spikeblock(3650,650,320,20,0xFF0000)
+
+    // potionpowerup(200,500,30,30,0x00640B)
 
 }
 
