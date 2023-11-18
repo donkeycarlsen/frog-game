@@ -38,11 +38,29 @@ class DKblock {
     launch = false
     gravityup = false
     gravitydown = false
-    // potion = false
+    invincible = false
 
     constructor(){}
     onCollision = ()=>{}
 
+}
+
+class DKpowerup {
+    sprite = null
+    touchable = false
+    collectible = true
+    invincible = false
+
+    constructor(){}
+    onCollision = ()=>{}
+}
+
+class DKplayer {
+    sprite = null
+    invincible = false
+    boostjump = false
+
+    constructor(){}
 }
 
 const terrain = new PIXI.Container(PIXI.Texture.WHITE)
@@ -72,6 +90,9 @@ frog.height = 50
 frog.x = 50     // 50
 frog.y = 670    // 670
 level.addChild(frog)
+
+var f = new DKplayer()
+f.sprite = frog
 
 
 
@@ -157,7 +178,6 @@ var spikeblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
     var b = new DKblock()
     b.sprite = sblock
     b.ouchie = true
-
     blox.push(b)
 }
 
@@ -214,25 +234,40 @@ var gravitydownblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
 
 } 
 
-// var potionpowerup = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
-//     const ppowerup = new PIXI.Sprite(PIXI.Texture.WHITE)
-//     ppowerup.x = bx
-//     ppowerup.y = by
-//     ppowerup.width = bw
-//     ppowerup.height = bh
-//     ppowerup.tint = bc
-//     terrain.addChild(ppowerup)
+var invinciblepowerup = (bx,by,bw=40,bh=40,bc=0xFFFFFF)=>{
+    const block = new PIXI.Sprite(PIXI.Texture.WHITE)
+    block.x = bx
+    block.y = by
+    block.width = bw
+    block.height = bh
+    block.tint = bc
+    terrain.addChild(block)
+    
+    var p = new DKpowerup()
+    p.sprite = block
+    p.invincible = true
 
-//     var b = new DKblock()
-//     b.sprite = ppowerup
-//     b.collectible = true
-//     b.touchable = false
-//     b.potion = true
+    blox.push(p)
+}
 
-//     blox.push(b)
+var boostjumppowerup = (bx,by,bw=40,bh=40,bc=0xFFFFFF)=>{
+    const block = new PIXI.Sprite(PIXI.Texture.WHITE)
+    block.x = bx
+    block.y = by
+    block.width = bw
+    block.height = bh
+    block.tint = bc
+    terrain.addChild(block)
+    
+    var p = new DKpowerup()
+    p.sprite = block
+    p.boostjump = true
 
+    blox.push(p)
+}
 
 var blox = []
+
 
 //bonkey level
 // makeblock(500-80*2,640,80,80,0xC1FF00)
@@ -291,7 +326,7 @@ window.addEventListener("keydown", function(e) {
 //   if (e.key == "r"){unloadlevel()}
 //   if (e.key == "q"){loadlevel()}
     if (e.key == "r"){reloadlevel()}
-    if (e.key == "p"){frog.tint = 0xE71C1C}
+    if (e.key == "p"){frog.tint = 0xFF0000}
     if (e.key == "o"){frog.tint = 0x009600}
 
 })
@@ -306,16 +341,6 @@ var canjumpy = true
 
 app.ticker.add((delta) => {
 
-    // bonkey level timer
-    // if(frog.y < 670 && frog.y > 670-(80*6)){timerdisplay.text=((Date.now()-timer)/1000)}
-    // else{timer = Date.now()}
-
-    // level 1 timer
-    // if (frog.x > 0){timerdisplay.text=((Date.now()-timer)/1000)}
-    // else{timer = Date.now()}
-
-    // if (frog.x < 52 && frog.y < 335){timer = Date.now() ; frog.x = 0 ; frog.y = 670}
-
     // new level timer 
     if (frog.x > 50 && frog.x < 4070){timerdisplay.text=((Date.now()-timer)/1000)}
     else{timer = Date.now()}
@@ -327,18 +352,9 @@ app.ticker.add((delta) => {
     else {
         if (movingRight){speedX = -50}
         if (movingLeft){speedX = 50}
-    //    if (movingRight && frog.x < 400){speedX = -50}
-    //    else if (movingRight && frog.x > 400){speedX = 0 ; level.x -= 5}
-    //    if (movingLeft && frog.x > 200){speedX = 50}
-    //    else if (movingLeft && frog.x < 200){speedX = 0 ; level.x += 5}
 
-    }
+        }
 
-    // if (movingRight == movingLeft){speedX = 0}
-    // else {
-    //     if (movingLeft){speedX = 50}
-    //     if (movingRight){speedX = -50}
-    // }
     
     frog.x -= speedX * delta * 0.2
     speedX += accelX * delta * 0.2
@@ -346,12 +362,10 @@ app.ticker.add((delta) => {
     speedY += accelY * delta * 0.2
 
 
-    if (frog.x == 0){}
 
     blox.forEach(b => {
         wis(b)
     });
-
 
    
    
@@ -423,7 +437,9 @@ var wis = (block)=>{
         
         {
             block.onCollision()
-            if (block.ouchie){reloadlevel()}
+            if (block.invincible){frog.tint = 0xFF0000 ; f.invincible = true}
+            if (block.boostjump){}
+            if (block.ouchie && !f.invincible){reloadlevel()}
             if (block.collectible){s.y = 800}
             if (block.door != null){block.door.sprite.y = 800}
             if (block.launch){speedY = 100}
@@ -524,7 +540,7 @@ var loadlevel = ()=>{
     spikeblock(3250,650,320,20,0xFF0000)
     spikeblock(3650,650,320,20,0xFF0000)
 
-    // potionpowerup(200,500,30,30,0x00640B)
+    invinciblepowerup(200,500,30,30,0x00640B)
 
 }
 
@@ -533,10 +549,8 @@ loadlevel()
 var unloadlevel = ()=>{
 terrain.children = []
 blox = []
-kox = []
-dox = []
 }
 
 var reloadlevel = ()=>{
-    unloadlevel() ; loadlevel() ; frog.x = 50 ; frog.y = 670 ; speedY = 0 ; accelY = -20
+    unloadlevel() ; loadlevel() ; frog.x = 50 ; frog.y = 670 ; speedY = 0 ; accelY = -20 ; frog.tint = 0x009600
 }
