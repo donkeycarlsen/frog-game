@@ -12,6 +12,7 @@ title.style.position = "absolute"
 title.style.top = "10px"
 
 
+
 const level = new PIXI.Container(PIXI.Texture.WHITE)
    level.x = 0
    level.y = 0
@@ -94,7 +95,6 @@ var f = new DKplayer()
 f.sprite = frog
 
 
-
 var timer = Date.now()
 const timerdisplay = new PIXI.Text((Date.now()-timer)/1000,{
 fontFamily: 'Helvetica',
@@ -102,6 +102,7 @@ fill: 0xffffff,
 
 })
 app.stage.addChild(timerdisplay)
+
 
 
 
@@ -550,13 +551,13 @@ var loadlevel = ()=>{
     makeblock(4210,250,20,15,0x000000)
     makeblock(4210,265,20,15,0xFFFFFF)
 
-    spikeblock(880,600,120,70,0xFF0000)
+    spikeblock(880,620,120,50,0xFF0000)
     spikeblock(1580,650,150,20,0xFF0000)
     spikeblock(2850,650,320,20,0xFF0000)
     spikeblock(3250,650,320,20,0xFF0000)
     spikeblock(3650,650,320,20,0xFF0000)
 
-    invinciblepowerup(200,500,30,30,0xFF0000)
+    invinciblepowerup(200,200,30,30,0xFF0000)
 
 }
 
@@ -569,4 +570,5 @@ blox = []
 
 var reloadlevel = ()=>{
     unloadlevel() ; loadlevel() ; frog.x = 50 ; frog.y = 670 ; speedY = 0 ; accelY = -20 ; frog.tint = 0x009600
+    f.invincible = false
 }
