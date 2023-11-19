@@ -58,7 +58,6 @@ class DKpowerup {
 class DKplayer {
     sprite = null
     invincible = false
-    boostjump = false
 
     constructor(){}
 }
@@ -250,7 +249,7 @@ var invinciblepowerup = (bx,by,bw=40,bh=40,bc=0xFFFFFF)=>{
     blox.push(p)
 }
 
-var boostjumppowerup = (bx,by,bw=40,bh=40,bc=0xFFFFFF)=>{
+var offpowerup = (bx,by,bw=40,bh=40,bc=0xFFFFFF)=>{
     const block = new PIXI.Sprite(PIXI.Texture.WHITE)
     block.x = bx
     block.y = by
@@ -261,10 +260,9 @@ var boostjumppowerup = (bx,by,bw=40,bh=40,bc=0xFFFFFF)=>{
     
     var p = new DKpowerup()
     p.sprite = block
-    p.boostjump = true
 
     blox.push(p)
-}
+} 
 
 var blox = []
 
@@ -402,18 +400,16 @@ app.ticker.add((delta) => {
 })
 
 var jumpy = ()=>{
-    if (canjumpy == true){speedY = 68 ; timejumped = Date.now()}
-
+    if (canjumpy == true){
+        if (accelY < 0){speedY = 68 ; timejumped = Date.now()}
+        else if (accelY > 0){speedY = -68 ; timejumped = Date.now()}
+    }
     if ((Date.now()-timejumped) < 500){canjumpy = false}
     else {canjumpy = true}
+
+
 }
 
-var gravityuppedjumpy = ()=>{
-    if (canjumpy == true){speedY = -68 ; timejumped = Date.now()}
-
-    if ((Date.now()-timejumped) < 500){canjumpy = false}
-    else {canjumpy = true}
-}
 
 var wis = (block)=>{
     var s = block.sprite
@@ -438,7 +434,6 @@ var wis = (block)=>{
         {
             block.onCollision()
             if (block.invincible){frog.tint = 0xFF0000 ; f.invincible = true}
-            if (block.boostjump){}
             if (block.ouchie && !f.invincible){reloadlevel()}
             if (block.collectible){s.y = 800}
             if (block.door != null){block.door.sprite.y = 800}
@@ -455,7 +450,7 @@ var wis = (block)=>{
                 else {
                     if (mincollision == 0){frog.x = s.x + s.width}
                     if (mincollision == 1){frog.x = s.x - frog.width}
-                    if (mincollision == 2){frog.y = s.y + s.height ; if (speedY > 0){speedY = 0} ; if (speedY == 0 && movingUp){gravityuppedjumpy()}}     
+                    if (mincollision == 2){frog.y = s.y + s.height ; if (speedY > 0){speedY = 0} ; if (speedY == 0 && movingUp){jumpy()}}     
                     if (mincollision == 3){frog.y = s.y - frog.height ; if (speedY < 0){speedY = -(0.5 * speedY)}}
                 }
             }
@@ -534,13 +529,13 @@ var loadlevel = ()=>{
     makeblock(4210,250,20,15,0x000000)
     makeblock(4210,265,20,15,0xFFFFFF)
 
-    spikeblock(880,650,120,20,0xFF0000)
+    spikeblock(880,600,120,70,0xFF0000)
     spikeblock(1580,650,150,20,0xFF0000)
     spikeblock(2850,650,320,20,0xFF0000)
     spikeblock(3250,650,320,20,0xFF0000)
     spikeblock(3650,650,320,20,0xFF0000)
 
-    invinciblepowerup(200,500,30,30,0x00640B)
+    invinciblepowerup(200,500,30,30,0xFF0000)
 
 }
 
