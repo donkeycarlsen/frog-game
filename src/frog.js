@@ -335,6 +335,27 @@ window.addEventListener("keyup", function(e) {
     if (e.key == "ArrowUp"){movingUp = false ; timejumped = 0 ; canjumpy = true}
 })
 
+window.addEventListener("keydown", function(e) {
+    if (e.key == "d"){movingRight = true}
+    if (e.key == "a"){movingLeft = true}
+    if (e.key == "w"){if(movingUp == false){timejumped = Date.now()} ; movingUp = true}
+ //   if (e.key == "r"){unloadlevel()}
+ //   if (e.key == "q"){loadlevel()}
+     if (e.key == "r"){reloadlevel()}
+     if (e.key == "p"){frog.tint = 0xFF0000}
+     if (e.key == "o"){frog.tint = 0x009600}
+ 
+ })
+ // if(movingUp == false){timejumped = Date.now()}
+ window.addEventListener("keyup", function(e) {
+     if (e.key == "d"){movingRight = false}
+     if (e.key == "a"){movingLeft = false}
+     if (e.key == "w"){movingUp = false ; timejumped = 0 ; canjumpy = true}
+ })
+
+
+
+
 var canjumpy = true
 
 app.ticker.add((delta) => {
