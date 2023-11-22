@@ -1,5 +1,5 @@
 const app = new PIXI.Application({
-    width: 1280, height: 720, backgroundColor: 0x42A1F5, resolution: 1
+    width: 1280, height: 720, backgroundColor: 0x003250, resolution: 1
 })
 document.body.appendChild(app.view)
 
@@ -94,12 +94,17 @@ level.addChild(frog)
 var f = new DKplayer()
 f.sprite = frog
 
+const texture0 = PIXI.Texture.from('src/assets/texture0.png');
+const texture1 = PIXI.Texture.from('src/assets/texture1.png');
+var textures = [texture0,texture1]
+
+
+
 
 var timer = Date.now()
 const timerdisplay = new PIXI.Text((Date.now()-timer)/1000,{
 fontFamily: 'Helvetica',
 fill: 0xffffff,
-
 })
 app.stage.addChild(timerdisplay)
 
@@ -119,13 +124,14 @@ var speedY = 0
 
 
 
-var makeblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
+var makeblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF,bi=textures[0])=>{
     const block = new PIXI.Sprite(PIXI.Texture.WHITE)
     block.x = bx
     block.y = by
     block.width = bw
     block.height = bh
     block.tint = bc
+    block.image = bi
     terrain.addChild(block)
     
     var b = new DKblock()
@@ -267,57 +273,6 @@ var offpowerup = (bx,by,bw=40,bh=40,bc=0xFFFFFF)=>{
 
 var blox = []
 
-
-//bonkey level
-// makeblock(500-80*2,640,80,80,0xC1FF00)
-// makeblock(500-80,640-80,80,80*2,0xC1FF00)
-// makeblock(500,640-80*2,80,80*3,0xC1FF00)
-// makeblock(500+80,640-80*3,80,80*4,0xC1FF00)
-// makeblock(500+2*80,640-80*4,80,80*5,0xC1FF00)
-// makeblock(500+3*80,640-80*5,80,80*6,0xC1FF00)
-// makeblock(500-80*3,640-80*2)
-// makeblock(500-80*2,640-80*3)
-// makeblock(500-80,640-80*4)
-// makeblock(500,640-80*5)
-// makeblock(500+80,640-80*6)
-
-//level 1
-// makeblock(-70,30,80,640,0x534444)
-// makeblock(-80,0,80,720,0x534444)
-// makeblock(1280-12,0,80,720,0x534444)
-// makeblock(0,30,120,12,0x534444)
-// makeblock(120,0,12,42,0x534444)
-// makeblock(120,0,1280-120,12,0x534444)
-// makeblock(480,640,100,80,0x534444)
-// makeblock(500+80,640-80,80,80*2,0x534444)
-// makeblock(500+80*2,640,100,80,0x534444)
-// makeblock(500+80*6,640-80,80,30,0x534444)
-// makeblock(500+80*2,640-80*3,80*5,30,0x534444)
-// makeblock(500+80*1,640-80*4,80,110,0x534444)
-// makeblock(500+80*1,640-80*6.9,80,80,0x534444)
-// makeblock(500-20+80*3,640-80*5,40,10,0x534444)
-// makeblock(800,640-80*6,40,10,0x534444)
-// makeblock(1000,640-80*6,40,10,0x534444)
-// makeblock(1200,640-80*6,100,10,0x534444)
-// makeblock(500+80*8.75,640,80,30,0x534444)
-// makeblock(500+80*8.75,640-80*2,80,30,0x534444)
-// keyblock(1225,120,20,20,0xFFD500)
-// makeblock(540,640-80*6.9,40,342,0x534444)
-// makeblock(300,640-80*3,80*3,30,0x534444)
-// makeblock(80,640-80*4,80*.5,30,0x534444)
-// makeblock(10,320,20,15,0x000000)
-// makeblock(30,320,20,15,0xFFFFFF)
-// makeblock(50,320,20,15,0x000000)
-// makeblock(70,320,20,15,0xFFFFFF)
-// makeblock(30,335,20,15,0x000000)
-// makeblock(10,335,20,15,0xFFFFFF)
-// makeblock(70,335,20,15,0x000000)
-// makeblock(50,335,20,15,0xFFFFFF)
-// doorblock(200,12,20,418,0xC72700,kox[0])
-
-
-
-
 window.addEventListener("keydown", function(e) {
    if (e.key == "ArrowRight"){movingRight = true}
    if (e.key == "ArrowLeft"){movingLeft = true}
@@ -361,7 +316,7 @@ var canjumpy = true
 
 app.ticker.add((delta) => {
 
-    // new level timer 
+    // // new level timer 
     if (frog.x > 50 && frog.x < 4070){timerdisplay.text=((Date.now()-timer)/1000)}
     else{timer = Date.now()}
     if (timer == Date.now() && frog.x > 4070 && frog.y < 400){frog.y = 670}
@@ -487,6 +442,11 @@ var loadlevel = ()=>{
     makeblock(0,670,10000,100,0x000000)
     makeblock(0,30,50,1500,0x000000)
     makeblock(4230,-500,50,1500,0x000000)
+
+    // floor/wall
+    makeblock(0,670,10000,100,0x000000)
+    makeblock(0,30,50,1500,0x000000)
+    makeblock(4230,-500,50,1500,0x000000)
     //                                                  STAIRCASE: for (var b = 1; b < 20; b++){makeblock(500+80*b,670-80*b,1000)}
     makeblock(500,590,80,80,0xB900FF)
     makeblock(800,510,80,160,0xB900FF)
@@ -556,9 +516,9 @@ var loadlevel = ()=>{
     spikeblock(2850,650,320,20,0xFF0000)
     spikeblock(3250,650,320,20,0xFF0000)
     spikeblock(3650,650,320,20,0xFF0000)
+    // spikeblock(930,620,20,20,0xFFFFFF)
 
     invinciblepowerup(200,200,30,30,0xFF0000)
-
 }
 
 loadlevel()
@@ -570,5 +530,5 @@ blox = []
 
 var reloadlevel = ()=>{
     unloadlevel() ; loadlevel() ; frog.x = 50 ; frog.y = 670 ; speedY = 0 ; accelY = -20 ; frog.tint = 0x009600
-    f.invincible = false
+    f = new DKplayer()
 }
