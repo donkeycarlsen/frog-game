@@ -309,10 +309,23 @@ window.addEventListener("keydown", function(e) {
      if (e.key == "w"){movingUp = false ; timejumped = 0 ; canjumpy = true}
  })
 
-
-
+var connection = new DKConnection()
+connection.connect()
+const networkElements = new PIXI.Container(PIXI.Texture.WHITE)
+level.addChild(networkElements)
+connection.levelElements = networkElements
 
 var canjumpy = true
+
+var timeSinceLastUpdateServer = 0
+var serverUpdateDelay = 1000/100
+app.ticker.add((delta) => {
+    timeSinceLastUpdateServer += delta
+    if (timeSinceLastUpdateServer > serverUpdateDelay) {
+        timeSinceLastUpdateServer = 0
+        connection.sendPosition(frog.x, frog.y, 0, 0)
+    }
+})
 
 app.ticker.add((delta) => {
 
@@ -373,7 +386,7 @@ app.ticker.add((delta) => {
 //    bgg.x = Math.max(cameraright,-level.x)
 
    
-
+    connection.renderFrogs()
 })
 
 var jumpy = ()=>{
