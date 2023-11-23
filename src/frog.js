@@ -318,7 +318,7 @@ connection.levelElements = networkElements
 var canjumpy = true
 
 var timeSinceLastUpdateServer = 0
-var serverUpdateDelay = 1000/100
+var serverUpdateDelay = 1000/300
 app.ticker.add((delta) => {
     timeSinceLastUpdateServer += delta
     if (timeSinceLastUpdateServer > serverUpdateDelay) {
