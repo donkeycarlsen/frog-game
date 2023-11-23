@@ -8,7 +8,7 @@ class DKConnection {
     }
 
     connect = () => {
-        this.socket = io('https://18.219.118.32:1111'); // Replace with your server's URL
+        this.socket = io('http://18.219.118.32:1111'); // Replace with your server's URL
 
         // Handle the connection event
         this.socket.on('connect', () => {
