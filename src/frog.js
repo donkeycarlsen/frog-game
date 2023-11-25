@@ -1,17 +1,50 @@
 const app = new PIXI.Application({
-    width: 1280, height: 720, backgroundColor: 0x003250, resolution: 1
+    width: 1280, height: 720, backgroundColor: 0xDD8CFC, resolution: 1
 })
 document.body.appendChild(app.view)
 
 
 
 var title = document.getElementById("display")
-title.innerHTML = "Frog Game"
+title.innerHTML = ""
 title.style.color = "#009600"
 title.style.position = "absolute"
 title.style.top = "10px"
 
+const gui = new PIXI.Container(PIXI.Texture.WHITE)
+app.stage.addChild(gui)
+var menu = new DKmenu(gui)
+menu.loadbackground()
+menu.loadmainmenu()
 
+menu.buttons[0].on('click', (event) => {
+    menu.buttons[0].y = 3000 ; menu.other[0].y = 3000
+    menu.loadsecondmenu()
+
+    menu.buttons[1].on('click', (event) => {
+        console.log('singleplayer')
+        menu.buttons[1].y = 3000 ; menu.buttons[2].y = 3000 ; menu.buttons[3].y = 3000
+        menu.loadsingleplayermenu()
+            menu.levelbuttons[0].on('click', (event) =>{
+                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 4000 ; menu.levelbuttons[1].y = 3000 ;
+                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
+                loadlevel1()
+            })
+            menu.levelbuttons[1].on('click', (event) =>{
+                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 4000 ;
+                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
+                loadlevel2()
+            })
+
+    });
+    
+    menu.buttons[2].on('click', (event) => {
+        console.log('multiplayer')});
+    
+    menu.buttons[3].on('click', (event) => {
+        console.log('avatar')});
+
+});
 
 const level = new PIXI.Container(PIXI.Texture.WHITE)
    level.x = 0
@@ -59,9 +92,12 @@ class DKpowerup {
 class DKplayer {
     sprite = null
     invincible = false
+    off = false
 
     constructor(){}
 }
+
+
 
 const terrain = new PIXI.Container(PIXI.Texture.WHITE)
    terrain.x = 0
@@ -87,25 +123,30 @@ const frog = new PIXI.Sprite(PIXI.Texture.WHITE)
 frog.tint = 0x009600
 frog.width = 50
 frog.height = 50
-frog.x = 50     // 50
-frog.y = 670    // 670
+frog.x = -2000     // 50
+frog.y = 1000    // 670
 level.addChild(frog)
 
 var f = new DKplayer()
 f.sprite = frog
 
+
+
 const texture0 = PIXI.Texture.from('src/assets/texture0.png');
-const texture1 = PIXI.Texture.from('src/assets/texture1.png');
+texture0.baseTexture.wrapMode = PIXI.WRAP_MODES.MIRRORED_REPEAT;
+const texture1 = PIXI.Texture.from('src/assets/texture1.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT});
 var textures = [texture0,texture1]
 
 
 
-
 var timer = Date.now()
-const timerdisplay = new PIXI.Text((Date.now()-timer)/1000,{
-fontFamily: 'Helvetica',
-fill: 0xffffff,
+const timerdisplay = new PIXI.Text((Date.now()-timer)/1000)
+timerdisplay.style = new PIXI.TextStyle({
+    fill: 0xFFFFFF
 })
+timerdisplay.y = 3000
+
+
 app.stage.addChild(timerdisplay)
 
 
@@ -131,7 +172,7 @@ var makeblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF,bi=textures[0])=>{
     block.width = bw
     block.height = bh
     block.tint = bc
-    block.image = bi
+    block.texture = bi
     terrain.addChild(block)
     
     var b = new DKblock()
@@ -184,6 +225,7 @@ var spikeblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
     var b = new DKblock()
     b.sprite = sblock
     b.ouchie = true
+    b.touchable = false
     blox.push(b)
 }
 
@@ -241,32 +283,34 @@ var gravitydownblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
 } 
 
 var invinciblepowerup = (bx,by,bw=40,bh=40,bc=0xFFFFFF)=>{
-    const block = new PIXI.Sprite(PIXI.Texture.WHITE)
-    block.x = bx
-    block.y = by
-    block.width = bw
-    block.height = bh
-    block.tint = bc
-    terrain.addChild(block)
+    const iblock = new PIXI.Sprite(PIXI.Texture.WHITE)
+    iblock.x = bx
+    iblock.y = by
+    iblock.width = bw
+    iblock.height = bh
+    iblock.tint = bc
+    terrain.addChild(iblock)
     
     var p = new DKpowerup()
-    p.sprite = block
+    p.sprite = iblock
     p.invincible = true
 
     blox.push(p)
 }
 
 var offpowerup = (bx,by,bw=40,bh=40,bc=0xFFFFFF)=>{
-    const block = new PIXI.Sprite(PIXI.Texture.WHITE)
-    block.x = bx
-    block.y = by
-    block.width = bw
-    block.height = bh
-    block.tint = bc
-    terrain.addChild(block)
+    const oblock = new PIXI.Sprite(PIXI.Texture.WHITE)
+    oblock.x = bx
+    oblock.y = by
+    oblock.width = bw
+    oblock.height = bh
+    oblock.tint = bc
+    terrain.addChild(oblock)
     
     var p = new DKpowerup()
-    p.sprite = block
+    p.sprite = oblock
+    p.touchable = false
+    p.off = true
 
     blox.push(p)
 } 
@@ -277,8 +321,8 @@ window.addEventListener("keydown", function(e) {
    if (e.key == "ArrowRight"){movingRight = true}
    if (e.key == "ArrowLeft"){movingLeft = true}
    if (e.key == "ArrowUp"){if(movingUp == false){timejumped = Date.now()} ; movingUp = true}
-//   if (e.key == "r"){unloadlevel()}
-//   if (e.key == "q"){loadlevel()}
+    // if (e.key == "2"){unloadlevel()}
+    // if (e.key == "1"){loadlevel1()}
     if (e.key == "r"){reloadlevel()}
     if (e.key == "p"){frog.tint = 0xFF0000}
     if (e.key == "o"){frog.tint = 0x009600}
@@ -295,12 +339,6 @@ window.addEventListener("keydown", function(e) {
     if (e.key == "d"){movingRight = true}
     if (e.key == "a"){movingLeft = true}
     if (e.key == "w"){if(movingUp == false){timejumped = Date.now()} ; movingUp = true}
- //   if (e.key == "r"){unloadlevel()}
- //   if (e.key == "q"){loadlevel()}
-     if (e.key == "r"){reloadlevel()}
-     if (e.key == "p"){frog.tint = 0xFF0000}
-     if (e.key == "o"){frog.tint = 0x009600}
- 
  })
  // if(movingUp == false){timejumped = Date.now()}
  window.addEventListener("keyup", function(e) {
@@ -424,6 +462,7 @@ var wis = (block)=>{
         {
             block.onCollision()
             if (block.invincible){frog.tint = 0xFF0000 ; f.invincible = true}
+            if (block.off){frog.tint = 0x009600 ; f = new DKplayer()}
             if (block.ouchie && !f.invincible){reloadlevel()}
             if (block.collectible){s.y = 800}
             if (block.door != null){block.door.sprite.y = 800}
@@ -449,18 +488,19 @@ var wis = (block)=>{
 
 
 
-var loadlevel = ()=>{
-    
+var loadlevel1 = ()=>{
+    frog.x = 50 ; frog.y = 670 ; speedY = 0 ; accelY = -20 ; frog.tint = 0x009600 ; timerdisplay.y = 0
+
     // floor/wall
     makeblock(0,670,10000,100,0x000000)
-    makeblock(0,30,50,1500,0x000000)
+    makeblock(0,-500,50,1500,0x000000)
     makeblock(4230,-500,50,1500,0x000000)
 
     // floor/wall
     makeblock(0,670,10000,100,0x000000)
     makeblock(0,30,50,1500,0x000000)
     makeblock(4230,-500,50,1500,0x000000)
-    //                                                  STAIRCASE: for (var b = 1; b < 20; b++){makeblock(500+80*b,670-80*b,1000)}
+    //                                          STAIRCASE: for (var b = 1; b < 20; b++){makeblock(500+80*b,670-80*b,1000)}
     makeblock(500,590,80,80,0xB900FF)
     makeblock(800,510,80,160,0xB900FF)
     makeblock(700,410,80,20,0xB900FF)
@@ -532,9 +572,47 @@ var loadlevel = ()=>{
     // spikeblock(930,620,20,20,0xFFFFFF)
 
     invinciblepowerup(200,200,30,30,0xFF0000)
+    offpowerup(150,200,30,30,0x84500A)
 }
 
-loadlevel()
+var loadlevel2 = ()=>{
+    frog.x = 50 ; frog.y = 660 ; speedY = 0 ; accelY = -20 ; frog.tint = 0x009600 ; timerdisplay.y = 0
+
+    // floor/wall
+    makeblock(0,670,10000,100,0x6D1B7F)
+    makeblock(0,-500,50,1500,0x6D1B7F)
+    makeblock(4230,-500,50,1500,0x6D1B7F)
+    //
+    spikeblock(575,645,75,25,0x0095D6)
+    spikeblock(625,620,25,25,0x0095D6)
+
+    makeblock(650,570,150,100,0x6D1B7F)
+    makeblock(800,470,150,200,0x6D1B7F)
+
+    makeblock(950,470,50,10,0xE88D00)
+    makeblock(1000,475,50,10,0xE88D00)
+    makeblock(1050,480,100,10,0xE88D00)
+    makeblock(1150,485,100,10,0xE88D00)
+    makeblock(1250,485,150,10,0xE88D00)
+    makeblock(1400,480,100,10,0xE88D00)
+    makeblock(1500,475,50,10,0xE88D00)
+    makeblock(1550,470,50,10,0xE88D00)
+
+    spikeblock(950,645,650,25,0x0095D6)
+    spikeblock(950,620,100,25,0x0095D6)
+    spikeblock(1100,620,75,25,0x0095D6)
+    spikeblock(1200,620,125,25,0x0095D6)
+    spikeblock(1425,620,100,25,0x0095D6)
+    spikeblock(1575,620,25,25,0x0095D6)
+    spikeblock(950,595,25,25,0x0095D6)
+    spikeblock(1125,595,25,25,0x0095D6)
+    spikeblock(1225,595,25,25,0x0095D6)
+    spikeblock(1300,595,25,25,0x0095D6)
+    spikeblock(1450,595,50,25,0x0095D6)
+
+    makeblock(1600,470,150,200,0x6D1B7F)
+
+    }
 
 var unloadlevel = ()=>{
 terrain.children = []
@@ -542,6 +620,8 @@ blox = []
 }
 
 var reloadlevel = ()=>{
-    unloadlevel() ; loadlevel() ; frog.x = 50 ; frog.y = 670 ; speedY = 0 ; accelY = -20 ; frog.tint = 0x009600
+    unloadlevel()
+    if (menu.levelbuttons[0].y == 4000){loadlevel1()}
+    if (menu.levelbuttons[1].y == 4000){loadlevel2()}
     f = new DKplayer()
 }
