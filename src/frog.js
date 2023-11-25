@@ -582,22 +582,21 @@ var loadlevel2 = ()=>{
     makeblock(0,670,10000,100,0x6D1B7F)
     makeblock(0,-500,50,1500,0x6D1B7F)
     makeblock(4230,-500,50,1500,0x6D1B7F)
-    //
+    // first spikes
     spikeblock(575,645,75,25,0x0095D6)
     spikeblock(625,620,25,25,0x0095D6)
-
+    // first two blocks
     makeblock(650,570,150,100,0x6D1B7F)
     makeblock(800,470,150,200,0x6D1B7F)
-
+    // bridge
     makeblock(950,470,50,10,0xE88D00)
-    makeblock(1000,475,50,10,0xE88D00)
-    makeblock(1050,480,100,10,0xE88D00)
-    makeblock(1150,485,100,10,0xE88D00)
-    makeblock(1250,485,150,10,0xE88D00)
-    makeblock(1400,480,100,10,0xE88D00)
-    makeblock(1500,475,50,10,0xE88D00)
+    makeblock(1000,474,50,10,0xE88D00)
+    makeblock(1050,478,100,10,0xE88D00)
+    makeblock(1150,482,250,10,0xE88D00)
+    makeblock(1400,478,100,10,0xE88D00)
+    makeblock(1500,474,50,10,0xE88D00)
     makeblock(1550,470,50,10,0xE88D00)
-
+    // spikes under bridge
     spikeblock(950,645,650,25,0x0095D6)
     spikeblock(950,620,100,25,0x0095D6)
     spikeblock(1100,620,75,25,0x0095D6)
@@ -609,7 +608,7 @@ var loadlevel2 = ()=>{
     spikeblock(1225,595,25,25,0x0095D6)
     spikeblock(1300,595,25,25,0x0095D6)
     spikeblock(1450,595,50,25,0x0095D6)
-
+    // blocks after bridge
     makeblock(1600,470,150,200,0x6D1B7F)
 
     }
