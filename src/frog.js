@@ -163,6 +163,10 @@ var accelY = -20
 var speedX = 0
 var speedY = 0
 
+var cameraleft = 2000
+var cameraright = 1000
+var cameratop = 720
+var camerabot = 0
 
 
 var makeblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF,bi=textures[0])=>{
@@ -414,7 +418,7 @@ app.ticker.add((delta) => {
 
    var frogondascreenx = frog.x + level.x
    if (frogondascreenx > 400){level.x = -frog.x + 400}
-   if (frogondascreenx < 200){level.x = -frog.x + 200}
+   if (frogondascreenx < 250){level.x = -frog.x + 250}
    var frogondascreeny = frog.y + level.y
    if (frogondascreeny < 100){level.y = -frog.y + 100}
    if (frogondascreeny > 470){level.y = -frog.y + 470}
@@ -424,11 +428,6 @@ app.ticker.add((delta) => {
 //    if (bgg.x < 150){level.x = -frog.x + 150}
  
 
-
-   var cameraleft = 0
-   var cameraright = -3000
-   var cameratop = 720
-   var camerabot = 0
 
    level.x = Math.min(cameraleft,level.x)
    level.x = Math.max(cameraright,level.x)
@@ -505,6 +504,7 @@ var wis = (block)=>{
 
 var loadlevel1 = ()=>{
     frog.x = 50 ; frog.y = 670 ; speedY = 0 ; accelY = -20 ; frog.tint = 0x009600 ; timerdisplay.y = 0
+    cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0 ; //var invinciblefrog.tintforlevel = 0xFFFFFF
 
     // floor/wall
     makeblock(0,670,10000,100,0x000000)
@@ -592,6 +592,10 @@ var loadlevel1 = ()=>{
 
 var loadlevel2 = ()=>{
     frog.x = 50 ; frog.y = 660 ; speedY = 0 ; accelY = -20 ; frog.tint = 0x009600 ; timerdisplay.y = 0
+    cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0 ; //var invinciblefrog.tintforlevel = 0xFFFFFF
+
+    // background in first tunnel
+    backgroundblock(2040,-270,320,200,0x6250A7)
 
     // floor/wall
     makeblock(0,670,10000,100,0x6D1B7F)
@@ -629,15 +633,54 @@ var loadlevel2 = ()=>{
     bounceblock(1825,360,50,10,0xFAE160)
     makeblock(1900,170,100,500,0x6D1B7F)
     bounceblock(1925,160,50,10,0xFAE160)
-    makeblock(2000,-70,100,740,0x6D1B7F)
+    makeblock(2000,-70,400,740,0x6D1B7F)
     // cloud 1 outside
-    makeblock(1600,-130,200,70,0xE442D8)
-    makeblock(1595,-125,210,60,0xE442D8)
+    makeblock(1600,-130,90,75,0xE442D8)
+    makeblock(1710,-130,90,75,0xE442D8)
+    makeblock(1590,-120,220,50,0xE442D8)
+    makeblock(1610,-100,50,50,0xE442D8)
+    makeblock(1670,-100,60,50,0xE442D8)
+    makeblock(1675,-100,50,55,0xE442D8)
+    makeblock(1740,-100,50,50,0xE442D8)
     // inside
-    makeblock(1610,-120,180,50,0xFFBFF9)
-    makeblock(1605,-115,190,40,0xFFBFF9)
+    makeblock(1600+5,-130+5,90-10,75-10,0xFFBFF9)
+    makeblock(1710+5,-130+5,90-10,75-10,0xFFBFF9)
+    makeblock(1590+5,-120+5,220-10,50-10,0xFFBFF9)
+    makeblock(1610+5,-100+5,50-10,50-10,0xFFBFF9)
+    makeblock(1670+5,-100+5,60-10,50-10,0xFFBFF9)
+    makeblock(1675+5,-100+5,50-10,55-10,0xFFBFF9)
+    makeblock(1740+5,-100+5,50-10,50-10,0xFFBFF9)
+    // cloud 2 outside
+    makeblock(1600-400,-130,90,75,0xE442D8)
+    makeblock(1710-400,-130,90,75,0xE442D8)
+    makeblock(1590-400,-120,220,50,0xE442D8)
+    makeblock(1610-400,-100,50,50,0xE442D8)
+    makeblock(1670-400,-100,60,50,0xE442D8)
+    makeblock(1675-400,-100,50,55,0xE442D8)
+    makeblock(1740-400,-100,50,50,0xE442D8)
+    // inside
+    makeblock(1600+5-400,-130+5,90-10,75-10,0xFFBFF9)
+    makeblock(1710+5-400,-130+5,90-10,75-10,0xFFBFF9)
+    makeblock(1590+5-400,-120+5,220-10,50-10,0xFFBFF9)
+    makeblock(1610+5-400,-100+5,50-10,50-10,0xFFBFF9)
+    makeblock(1670+5-400,-100+5,60-10,50-10,0xFFBFF9)
+    makeblock(1675+5-400,-100+5,50-10,55-10,0xFFBFF9)
+    makeblock(1740+5-400,-100+5,50-10,50-10,0xFFBFF9)
+    // key 1
+    keyblock(1290,-250,20,20,0xBAFF40)
+    // door 1
+    doorblock(2080,-270,240,200,0x4046FF,blox[blox.length-1])
+    //blocks above door 1
+    makeblock(2000,-470,400,200,0x6D1B7F)
+    //blocks after door 1
+    makeblock(2400,30,50,640,0x6D1B7F)
+    makeblock(2450,230,50,440,0x6D1B7F)
+    makeblock(2500,280,150,390,0x6D1B7F)
+    makeblock(2650,230,50,440,0x6D1B7F)
+    makeblock(2700,-30,100,670,0x6D1B7F)
 
 
+    
     }
 
 var unloadlevel = ()=>{
