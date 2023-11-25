@@ -2,7 +2,7 @@ class DKConnection {
     socket = null
 
     levelElements = undefined
-    otherFrogs = [[0,0]]
+    otherFrogs = []
 
     constructor() {
     }
@@ -43,13 +43,23 @@ class DKConnection {
             frog.x = 0
             frog.y = 0
             this.levelElements.addChild(frog)
+
+            const nametag = new PIXI.Text('FROG',{
+            fontFamily: 'Helvetica',
+            fill: 0xffffff,
+            })
+            nametag.x = 0
+            nametag.y = -50
+            frog.addChild(nametag)
         }
         while (this.levelElements.children.length > this.otherFrogs.length) {
             this.levelElements.children = this.levelElements.children.slice(1)
         }
         this.levelElements.children = this.levelElements.children.map((f, find) => {
-            f.x = this.otherFrogs[find][0]
-            f.y = this.otherFrogs[find][1]
+            f.x = this.otherFrogs[find].pos[0]
+            f.y = this.otherFrogs[find].pos[1]
+            f.tint = this.otherFrogs[find].col
+            f.children[0].text = this.otherFrogs[find].usr
             return f
         })
     }
