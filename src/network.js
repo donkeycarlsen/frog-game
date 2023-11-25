@@ -12,7 +12,7 @@ class DKConnection {
 
         // Handle the connection event
         this.socket.on('connect', () => {
-        console.log('Connected to the WebSocket server');
+        // console.log('Connected to the WebSocket server');
 
         // Send a message to the server
         this.socket.emit('chatMessage', 'Hello, WebSocket Server!');
@@ -20,17 +20,17 @@ class DKConnection {
 
         // Handle received messages from the server
         this.socket.on('chatMessage', (message) => {
-        console.log(`Received message from server: ${message}`);
+        // console.log(`Received message from server: ${message}`);
         });
 
         this.socket.on('otherFrogs', (frogs) => {
-            console.log(`Received message from server: ${frogs}`);
+            // console.log(`Received message from server: ${frogs}`);
             this.otherFrogs = frogs
         });
 
         // Handle disconnection
         this.socket.on('disconnect', () => {
-        console.log('Disconnected from the WebSocket server');
+        // console.log('Disconnected from the WebSocket server');
         });
     }
 
