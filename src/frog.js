@@ -324,8 +324,7 @@ window.addEventListener("keydown", function(e) {
     // if (e.key == "2"){unloadlevel()}
     // if (e.key == "1"){loadlevel1()}
     if (e.key == "r"){reloadlevel()}
-    if (e.key == "p"){frog.tint = 0xFF0000}
-    if (e.key == "o"){frog.tint = 0x009600}
+    if (e.key == "m"){makeblock(frog.x,frog.y+frog.height,frog.width,frog.height)}
 
 })
 // if(movingUp == false){timejumped = Date.now()}
