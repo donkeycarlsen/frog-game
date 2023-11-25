@@ -282,6 +282,22 @@ var gravitydownblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
 
 } 
 
+var backgroundblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF,bi=textures[0])=>{
+    const bblock = new PIXI.Sprite(PIXI.Texture.WHITE)
+    bblock.x = bx
+    bblock.y = by
+    bblock.width = bw
+    bblock.height = bh
+    bblock.tint = bc
+    bblock.texture = bi
+    terrain.addChild(bblock)
+    
+    var b = new DKblock()
+    b.sprite = bblock
+    b.touchable = false
+    blox.push(b)
+}
+
 var invinciblepowerup = (bx,by,bw=40,bh=40,bc=0xFFFFFF)=>{
     const iblock = new PIXI.Sprite(PIXI.Texture.WHITE)
     iblock.x = bx
@@ -313,7 +329,7 @@ var offpowerup = (bx,by,bw=40,bh=40,bc=0xFFFFFF)=>{
     p.off = true
 
     blox.push(p)
-} 
+}
 
 var blox = []
 
@@ -398,10 +414,10 @@ app.ticker.add((delta) => {
 
    var frogondascreenx = frog.x + level.x
    if (frogondascreenx > 400){level.x = -frog.x + 400}
-   if (frogondascreenx < 150){level.x = -frog.x + 150}
+   if (frogondascreenx < 200){level.x = -frog.x + 200}
    var frogondascreeny = frog.y + level.y
    if (frogondascreeny < 100){level.y = -frog.y + 100}
-   if (frogondascreeny > 570){level.y = -frog.y + 570}
+   if (frogondascreeny > 470){level.y = -frog.y + 470}
 
 //    bgg.x = -level.x
 //    if (bgg.x > 400){level.x = -frog.x + 400}
@@ -588,13 +604,13 @@ var loadlevel2 = ()=>{
     makeblock(650,570,150,100,0x6D1B7F)
     makeblock(800,470,150,200,0x6D1B7F)
     // bridge
-    makeblock(950,470,50,10,0xE88D00)
-    makeblock(1000,474,50,10,0xE88D00)
-    makeblock(1050,478,100,10,0xE88D00)
-    makeblock(1150,482,250,10,0xE88D00)
-    makeblock(1400,478,100,10,0xE88D00)
-    makeblock(1500,474,50,10,0xE88D00)
-    makeblock(1550,470,50,10,0xE88D00)
+    makeblock(950,470,50,10,0xDE8000)
+    makeblock(1000,474,50,10,0xDE8000)
+    makeblock(1050,478,100,10,0xDE8000)
+    makeblock(1150,482,250,10,0xDE8000)
+    makeblock(1400,478,100,10,0xDE8000)
+    makeblock(1500,474,50,10,0xDE8000)
+    makeblock(1550,470,50,10,0xDE8000)
     // spikes under bridge
     spikeblock(950,645,650,25,0x0095D6)
     spikeblock(950,620,100,25,0x0095D6)
@@ -608,7 +624,19 @@ var loadlevel2 = ()=>{
     spikeblock(1300,595,25,25,0x0095D6)
     spikeblock(1450,595,50,25,0x0095D6)
     // blocks after bridge
-    makeblock(1600,470,150,200,0x6D1B7F)
+    makeblock(1600,470,200,200,0x6D1B7F)
+    makeblock(1800,370,100,300,0x6D1B7F)
+    bounceblock(1825,360,50,10,0xFAE160)
+    makeblock(1900,170,100,500,0x6D1B7F)
+    bounceblock(1925,160,50,10,0xFAE160)
+    makeblock(2000,-70,100,740,0x6D1B7F)
+    // cloud 1 outside
+    makeblock(1600,-130,200,70,0xE442D8)
+    makeblock(1595,-125,210,60,0xE442D8)
+    // inside
+    makeblock(1610,-120,180,50,0xFFBFF9)
+    makeblock(1605,-115,190,40,0xFFBFF9)
+
 
     }
 
