@@ -69,10 +69,12 @@ class DKblock {
     collectible = false
     ouchie = false
     door = null
-    launch = false
+    bounce = false
     gravityup = false
     gravitydown = false
     invincible = false
+    launchright = false
+    launchleft = false
 
     constructor(){}
     onCollision = ()=>{}
@@ -163,6 +165,12 @@ var accelY = -20
 var speedX = 0
 var speedY = 0
 
+var excessAccelXright = -3
+var excessSpeedXright = 0
+var excessAccelXleft = 3
+var excessSpeedXleft = 0
+
+
 var cameraleft = 2000
 var cameraright = 1000
 var cameratop = 720
@@ -245,7 +253,7 @@ var bounceblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
     var b = new DKblock()
     b.sprite = bblock
     b.touchable = false
-    b.launch = true
+    b.bounce = true
 
     blox.push(b)
 
@@ -300,6 +308,42 @@ var backgroundblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF,bi=textures[0])=>{
     b.sprite = bblock
     b.touchable = false
     blox.push(b)
+}
+
+var launchrightblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
+    const bblock = new PIXI.Sprite(PIXI.Texture.WHITE)
+    bblock.x = bx
+    bblock.y = by
+    bblock.width = bw
+    bblock.height = bh
+    bblock.tint = bc
+    terrain.addChild(bblock)
+
+    var b = new DKblock()
+    b.sprite = bblock
+    b.touchable = false
+    b.launchright = true
+
+    blox.push(b)
+
+}
+
+var launchleftblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
+    const bblock = new PIXI.Sprite(PIXI.Texture.WHITE)
+    bblock.x = bx
+    bblock.y = by
+    bblock.width = bw
+    bblock.height = bh
+    bblock.tint = bc
+    terrain.addChild(bblock)
+
+    var b = new DKblock()
+    b.sprite = bblock
+    b.touchable = false
+    b.launchleft = true
+
+    blox.push(b)
+
 }
 
 var invinciblepowerup = (bx,by,bw=40,bh=40,bc=0xFFFFFF)=>{
@@ -384,10 +428,13 @@ app.ticker.add((delta) => {
     }
 })
 
+var timeron1 = 0
+var timeron2 = 0
+
 app.ticker.add((delta) => {
 
     // // new level timer 
-    if (frog.x > 50 && frog.x < 4070){timerdisplay.text=((Date.now()-timer)/1000)}
+    if (frog.x > timeron1 && frog.x < timeron2){timerdisplay.text=((Date.now()-timer)/1000)}
     else{timer = Date.now()}
     if (timer == Date.now() && frog.x > 4070 && frog.y < 400){frog.y = 670}
 
@@ -401,18 +448,21 @@ app.ticker.add((delta) => {
         }
 
     
-    frog.x -= speedX * delta * 0.2
+    frog.x -= (speedX * delta * 0.2) - excessSpeedXright - excessSpeedXleft
     speedX += accelX * delta * 0.2
     frog.y -= speedY * delta * 0.2
     speedY += accelY * delta * 0.2
 
+    excessSpeedXright += excessAccelXright * delta * 0.2
+    if (excessSpeedXright < 0){excessSpeedXright = 0}
 
+    excessSpeedXleft += excessAccelXleft * delta * 0.2
+    if (excessSpeedXleft > 0){excessSpeedXleft = 0}
 
     blox.forEach(b => {
         wis(b)
     });
 
-   
    
    //update camera
 
@@ -480,9 +530,11 @@ var wis = (block)=>{
             if (block.ouchie && !f.invincible){reloadlevel()}
             if (block.collectible){s.y = 800}
             if (block.door != null){block.door.sprite.y = 800}
-            if (block.launch){speedY = 100}
+            if (block.bounce){speedY = 100}
             if (block.gravityup){accelY = 20 ; speedY = 45}
             if (block.gravitydown){accelY = -20 ; speedY = -45}
+            if (block.launchright){excessSpeedXleft = 0 ; excessSpeedXright = 15}
+            if (block.launchleft){excessSpeedXright = 0 ; excessSpeedXleft = -15}
             if (block.touchable){
                 if (accelY < 0){
                     if (mincollision == 0){frog.x = s.x + s.width}
@@ -503,8 +555,12 @@ var wis = (block)=>{
 
 
 var loadlevel1 = ()=>{
-    frog.x = 50 ; frog.y = 670 ; speedY = 0 ; accelY = -20 ; frog.tint = 0x009600 ; timerdisplay.y = 0
-    cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0 ; //var invinciblefrog.tintforlevel = 0xFFFFFF
+    // frog
+    frog.x = 50 ; frog.y = 670 ; speedY = 0 ; accelY = -20 ; frog.tint = 0x009600 ; //var invinciblefrog.tintforlevel = 0xFFFFFF
+    // camera
+    cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0
+    // timer
+    timerdisplay.y = 0 ; timeron1 = 50 ; timeron2 = 4070
 
     // floor/wall
     makeblock(0,670,10000,100,0x000000)
@@ -591,11 +647,15 @@ var loadlevel1 = ()=>{
 }
 
 var loadlevel2 = ()=>{
-    frog.x = 50 ; frog.y = 660 ; speedY = 0 ; accelY = -20 ; frog.tint = 0x009600 ; timerdisplay.y = 0
-    cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0 ; //var invinciblefrog.tintforlevel = 0xFFFFFF
-
+     // frog
+    frog.x = 50 ; frog.y = 670 ; speedY = 0 ; accelY = -20 ; frog.tint = 0x009600 ; //var invinciblefrog.tintforlevel = 0xFFFFFF
+    // camera
+    cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0
+    // timer
+    timerdisplay.y = 0 ; timeron1 = 50 ; timeron2 = 4070
+    
     // background in first tunnel
-    backgroundblock(2040,-270,320,200,0x6250A7)
+    // backgroundblock(2040,-270,320,200,0x6250A7)
 
     // floor/wall
     makeblock(0,670,10000,100,0x6D1B7F)
@@ -667,18 +727,35 @@ var loadlevel2 = ()=>{
     makeblock(1675+5-400,-100+5,50-10,55-10,0xFFBFF9)
     makeblock(1740+5-400,-100+5,50-10,50-10,0xFFBFF9)
     // key 1
-    keyblock(1290,-250,20,20,0xBAFF40)
+    keyblock(1290,-250,20,20,0x4046FF)
     // door 1
     doorblock(2080,-270,240,200,0x4046FF,blox[blox.length-1])
-    //blocks above door 1
+    // blocks above door 1
     makeblock(2000,-470,400,200,0x6D1B7F)
-    //blocks after door 1
+    // blocks after door 1
     makeblock(2400,30,50,640,0x6D1B7F)
     makeblock(2450,230,50,440,0x6D1B7F)
     makeblock(2500,280,150,390,0x6D1B7F)
     makeblock(2650,230,50,440,0x6D1B7F)
-    makeblock(2700,-30,100,670,0x6D1B7F)
-
+    makeblock(2700,-30,100,700,0x6D1B7F)
+    // spikes under first jump after door
+    spikeblock(2500,255,150,25,0x0095D6)
+    spikeblock(2550,230,25,25,0x0095D6)
+    spikeblock(2625,205,25,75,0x0095D6)
+    spikeblock(2625,205,75,25,0x0095D6)
+    spikeblock(2650,180,25,25,0x0095D6)
+    // second jump
+    makeblock(2800,180,50,490,0x6D1B7F)
+    makeblock(2850,280,50,390,0x6D1B7F)
+    makeblock(2900,330,200,340,0x6D1B7F)
+    makeblock(3100,230,50,440,0x6D1B7F)
+    makeblock(3150,0,100,670,0x6D1B7F)
+    // spikes under second jump
+    spikeblock(2900,280,200,50,0x0095D6)
+    spikeblock(2850,255,250,25,0x0095D6)
+    spikeblock(2875,230,50,25,0x0095D6)
+    spikeblock(3025,230,75,25,0x0095D6)
+    spikeblock(3075,205,75,25,0x0095D6)
 
     
     }
