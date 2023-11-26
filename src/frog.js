@@ -533,8 +533,8 @@ var wis = (block)=>{
             if (block.bounce){speedY = 100}
             if (block.gravityup){accelY = 20 ; speedY = 45}
             if (block.gravitydown){accelY = -20 ; speedY = -45}
-            if (block.launchright){excessSpeedXleft = 0 ; excessSpeedXright = 15}
-            if (block.launchleft){excessSpeedXright = 0 ; excessSpeedXleft = -15}
+            if (block.launchright){excessSpeedXleft = 0 ; excessSpeedXright = 15 ; speedY = 50}
+            if (block.launchleft){excessSpeedXright = 0 ; excessSpeedXleft = -15 ; speedY = 50}
             if (block.touchable){
                 if (accelY < 0){
                     if (mincollision == 0){frog.x = s.x + s.width}
@@ -653,7 +653,7 @@ var loadlevel2 = ()=>{
     cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0
     // timer
     timerdisplay.y = 0 ; timeron1 = 50 ; timeron2 = 4070
-    
+
     // background in first tunnel
     // backgroundblock(2040,-270,320,200,0x6250A7)
 
@@ -756,8 +756,19 @@ var loadlevel2 = ()=>{
     spikeblock(2875,230,50,25,0x0095D6)
     spikeblock(3025,230,75,25,0x0095D6)
     spikeblock(3075,205,75,25,0x0095D6)
+    // blocks after third jump
+    makeblock(3500,-300,50,375,0x6D1B7F)
+    launchrightblock(3250,200,10,50,0xFAE160)
+    makeblock(3250,400,500,270,0x6D1B7F)
+    makeblock(3750,-100,100,770,0x6D1B7F)
+    makeblock(3675,150,75,35,0x6D1B7F)
+    makeblock(3550,50,75,25,0x6D1B7F)
+    makeblock(3675,-50,75,35,0x6D1B7F)
 
-    
+    // spikes under launchright
+    spikeblock(3250,350,500,50,0x0095D6)
+
+
     }
 
 var unloadlevel = ()=>{
