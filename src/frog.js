@@ -96,6 +96,8 @@ class DKplayer {
     invincible = false
     off = false
 
+    surfaces = []
+
     constructor(){}
 }
 
@@ -462,6 +464,9 @@ app.ticker.add((delta) => {
     blox.forEach(b => {
         wis(b)
     });
+    networkElements.children.forEach(p => {
+        handlePlayerCollision(p)
+    });
 
    
    //update camera
@@ -536,6 +541,44 @@ var wis = (block)=>{
             if (block.launchright){excessSpeedXleft = 0 ; excessSpeedXright = 15 ; speedY = 50}
             if (block.launchleft){excessSpeedXright = 0 ; excessSpeedXleft = -15 ; speedY = 50}
             if (block.touchable){
+                if (accelY < 0){
+                    if (mincollision == 0){frog.x = s.x + s.width}
+                    if (mincollision == 1){frog.x = s.x - frog.width}
+                    if (mincollision == 2){frog.y = s.y + s.height ; if (speedY > 0){speedY = -(0.5 * speedY)}}
+                    if (mincollision == 3){frog.y = s.y - frog.height ; if (speedY < 0){speedY = 0} ; if (speedY == 0 && movingUp){jumpy()}}
+                }
+                else {
+                    if (mincollision == 0){frog.x = s.x + s.width}
+                    if (mincollision == 1){frog.x = s.x - frog.width}
+                    if (mincollision == 2){frog.y = s.y + s.height ; if (speedY > 0){speedY = 0} ; if (speedY == 0 && movingUp){jumpy()}}     
+                    if (mincollision == 3){frog.y = s.y - frog.height ; if (speedY < 0){speedY = -(0.5 * speedY)}}
+                }
+            }
+        }
+}
+
+var handlePlayerCollision = (p)=>{
+    var s = p
+
+    var blockright = Math.abs(frog.x - s.x - s.width)
+    var blockleft = Math.abs(frog.x + frog.width - s.x)
+    var blockbottom = Math.abs(frog.y - s.y - s.height)
+    var blocktop = Math.abs(frog.y + frog.width - s.y)
+    var sidez = [blockright, blockleft, blockbottom, blocktop]
+    
+    var mincollision = 0
+    if (blockleft < sidez[mincollision]){mincollision = 1}
+    if (blockbottom < sidez[mincollision]){mincollision = 2}
+    if (blocktop < sidez[mincollision]){mincollision = 3}
+
+    
+    if (frog.x < s.x + s.width &&
+        frog.x + frog.width > s.x &&
+        frog.y < s.y + s.height &&
+        frog.y + frog.width > s.y)
+        {
+            //p.onCollision()
+            if (true) { //p.touchable
                 if (accelY < 0){
                     if (mincollision == 0){frog.x = s.x + s.width}
                     if (mincollision == 1){frog.x = s.x - frog.width}
