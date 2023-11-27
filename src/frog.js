@@ -542,8 +542,8 @@ var wis = (block)=>{
             if (block.launchleft){excessSpeedXright = 0 ; excessSpeedXleft = -150 ; speedY = 50}
             if (block.touchable){
                 if (accelY < 0){
-                    if (mincollision == 0){frog.x = s.x + s.width}
-                    if (mincollision == 1){frog.x = s.x - frog.width}
+                    if (mincollision == 0){frog.x = s.x + s.width  ; excessSpeedXright = 0 ; excessSpeedXleft = 0}
+                    if (mincollision == 1){frog.x = s.x - frog.width  ; excessSpeedXright = 0 ; excessSpeedXleft = 0}
                     if (mincollision == 2){frog.y = s.y + s.height ; if (speedY > 0){speedY = -(0.5 * speedY)}}
                     if (mincollision == 3){frog.y = s.y - frog.height ; if (speedY < 0){speedY = 0} ; if (speedY == 0 && movingUp){jumpy()}}
                 }
