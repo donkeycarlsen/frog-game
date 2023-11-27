@@ -75,6 +75,7 @@ class DKblock {
     invincible = false
     launchright = false
     launchleft = false
+    swim = false
 
     constructor(){}
     onCollision = ()=>{}
@@ -172,6 +173,7 @@ var excessSpeedXright = 0
 var excessAccelXleft = 20
 var excessSpeedXleft = 0
 
+var swimming = false
 
 var cameraleft = 2000
 var cameraright = 1000
@@ -348,6 +350,24 @@ var launchleftblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
 
 }
 
+var swimblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
+    const bblock = new PIXI.Sprite(PIXI.Texture.WHITE)
+    bblock.x = bx
+    bblock.y = by
+    bblock.width = bw
+    bblock.height = bh
+    bblock.tint = bc
+    bblock.alpha = 0.5
+    terrain.addChild(bblock)
+
+    var b = new DKblock()
+    b.sprite = bblock
+    b.touchable = false
+    b.swim = true
+
+    blox.push(b)
+}
+
 var invinciblepowerup = (bx,by,bw=40,bh=40,bc=0xFFFFFF)=>{
     const iblock = new PIXI.Sprite(PIXI.Texture.WHITE)
     iblock.x = bx
@@ -440,8 +460,6 @@ app.ticker.add((delta) => {
     else{timer = Date.now()}
     if (timer == Date.now() && frog.x > 4070 && frog.y < 400){frog.y = 670}
 
-
-
     if (movingRight == movingLeft){speedX = 0}
     else {
         if (movingRight){speedX = -50}
@@ -497,7 +515,7 @@ app.ticker.add((delta) => {
 })
 
 var jumpy = ()=>{
-    if (canjumpy == true){
+    if (canjumpy == true && swimming == false){
         if (accelY < 0){speedY = 68 ; timejumped = Date.now()}
         else if (accelY > 0){speedY = -68 ; timejumped = Date.now()}
     }
@@ -506,7 +524,6 @@ var jumpy = ()=>{
 
 
 }
-
 
 var wis = (block)=>{
     var s = block.sprite
@@ -540,6 +557,14 @@ var wis = (block)=>{
             if (block.gravitydown){accelY = -20 ; speedY = -45}
             if (block.launchright){excessSpeedXleft = 0 ; excessSpeedXright = 150 ; speedY = 50}
             if (block.launchleft){excessSpeedXright = 0 ; excessSpeedXleft = -150 ; speedY = 50}
+            if (block.swim){
+                swimming = true;
+                if (movingUp){accelY = 10 ; if (speedY > 20){accelY = -5}}
+                else {accelY = -5 ; if (speedY < -15){accelY = 25}} 
+                if (movingRight){accelX = -20 ; if(speedX < -40){accelX = 25}}
+                else {accelX = -20 ; if (speedX > 10){accelX = 25} ; if (speedX == 0){speedX = 0}}
+                
+            }
             if (block.touchable){
                 if (accelY < 0){
                     if (mincollision == 0){frog.x = s.x + s.width  ; excessSpeedXright = 0 ; excessSpeedXleft = 0}
@@ -555,6 +580,7 @@ var wis = (block)=>{
                 }
             }
         }
+        else {swimming = false ; accelY = -20}
 }
 
 var handlePlayerCollision = (p)=>{
@@ -599,7 +625,7 @@ var handlePlayerCollision = (p)=>{
 
 var loadlevel1 = ()=>{
     // frog
-    frog.x = 50 ; frog.y = 670 ; speedY = 0 ; accelY = -20 ; frog.tint = 0x009600 ; //var invinciblefrog.tintforlevel = 0xFFFFFF
+    frog.x = 50 ; frog.y = 670 ; speedY = 0 ; accelY = -20 ; frog.tint = 0x009600 ; swimming = false ; //var invinciblefrog.tintforlevel = 0xFFFFFF
     // camera
     cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0
     // timer
@@ -687,6 +713,7 @@ var loadlevel1 = ()=>{
 
     invinciblepowerup(200,200,30,30,0xFF0000)
     offpowerup(150,200,30,30,0x84500A)
+    swimblock(580,600,220,70,0x0095D6)
 }
 
 var loadlevel2 = ()=>{
