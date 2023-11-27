@@ -852,3 +852,5 @@ var reloadlevel = ()=>{
     if (menu.levelbuttons[1].y == 4000){loadlevel2()}
     f = new DKplayer()
 }
+
+console.log("booty butt cheeks")
