@@ -111,8 +111,6 @@ class DKConnection {
                 var requestedMoveDistance = Math.sqrt(Math.pow(movx, 2) + Math.pow(movy, 2))
                 var spddist = Math.sqrt(Math.pow(this.frogSpeeds[find][0], 2) + Math.pow(this.frogSpeeds[find][1], 2))
                 var maxmove = spddist * (delta / 1000 * 60)
-                console.log(maxmove + ' vs ' + spddist)
-                console.log(this.frogSpeeds)
                 if (spddist == 0) {
                     maxmove = 10 * (delta / 1000 * 60)
                 }
