@@ -1,6 +1,8 @@
 class DKConnection {
     socket = null
 
+    playerName = 'Frog'
+
     levelElements = undefined
     otherFrogs = []
 
@@ -12,10 +14,11 @@ class DKConnection {
 
         // Handle the connection event
         this.socket.on('connect', () => {
-        // console.log('Connected to the WebSocket server');
+            // console.log('Connected to the WebSocket server');
 
-        // Send a message to the server
-        this.socket.emit('chatMessage', 'Hello, WebSocket Server!');
+            // Send a message to the server
+            this.socket.emit('chatMessage', 'Hello, WebSocket Server!');
+            this.setUsername();
         });
 
         // Handle received messages from the server
@@ -32,6 +35,23 @@ class DKConnection {
         this.socket.on('disconnect', () => {
         // console.log('Disconnected from the WebSocket server');
         });
+
+        var inputElement = document.getElementById("usernameInput");
+    
+        var ths = this
+        inputElement.addEventListener("change", function() {
+            ths.playerName = inputElement.value;
+            console.log("Name changed to: " + ths.playerName);
+            ths.setUsername()
+        });
+    }
+
+    setUsername = () => {
+        this.socket.emit('setUsername', this.playerName);
+    }
+
+    setColor = () => {
+        this.socket.emit('setColor', '');
     }
 
     renderFrogs = () => {
@@ -45,11 +65,16 @@ class DKConnection {
             this.levelElements.addChild(frog)
 
             const nametag = new PIXI.Text('FROG',{
-            fontFamily: 'Helvetica',
             fill: 0xffffff,
+            fontSize: 6
             })
-            nametag.x = 0
-            nametag.y = -50
+            PIXI.settings.PRECISION_FRAGMENT = 'highp'; //this makes text looks better
+            PIXI.settings.ROUND_PIXELS = true;
+            nametag.x = 8
+            nametag.y = -3
+            nametag.anchor.set(0.5, 0.5)
+            nametag.roundPixels = true
+            nametag.resolution = 4
             frog.addChild(nametag)
         }
         while (this.levelElements.children.length > this.otherFrogs.length) {
