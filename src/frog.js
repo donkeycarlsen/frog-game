@@ -167,9 +167,9 @@ var accelY = -20
 var speedX = 0
 var speedY = 0
 
-var excessAccelXright = -3
+var excessAccelXright = -20
 var excessSpeedXright = 0
-var excessAccelXleft = 3
+var excessAccelXleft = 20
 var excessSpeedXleft = 0
 
 
@@ -450,7 +450,7 @@ app.ticker.add((delta) => {
         }
 
     
-    frog.x -= (speedX * delta * 0.2) - excessSpeedXright - excessSpeedXleft
+    frog.x -= (speedX * delta * 0.2) - (excessSpeedXright * delta * 0.2) - (excessSpeedXleft * delta * 0.2)
     speedX += accelX * delta * 0.2
     frog.y -= speedY * delta * 0.2
     speedY += accelY * delta * 0.2
@@ -538,8 +538,8 @@ var wis = (block)=>{
             if (block.bounce){speedY = 100}
             if (block.gravityup){accelY = 20 ; speedY = 45}
             if (block.gravitydown){accelY = -20 ; speedY = -45}
-            if (block.launchright){excessSpeedXleft = 0 ; excessSpeedXright = 15 ; speedY = 50}
-            if (block.launchleft){excessSpeedXright = 0 ; excessSpeedXleft = -15 ; speedY = 50}
+            if (block.launchright){excessSpeedXleft = 0 ; excessSpeedXright = 150 ; speedY = 50}
+            if (block.launchleft){excessSpeedXright = 0 ; excessSpeedXleft = -150 ; speedY = 50}
             if (block.touchable){
                 if (accelY < 0){
                     if (mincollision == 0){frog.x = s.x + s.width}
