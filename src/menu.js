@@ -141,4 +141,61 @@ class DKmenu {
 
 
     }
+
+    loadmultiplayermenu = ()=>{
+        const level1button = new PIXI.Sprite.from('src/assets/level1button.png')
+        level1button.x = 80
+        level1button.y = 150
+        level1button.zIndex = 0
+        level1button.width = 160
+        level1button.height = 160
+        level1button.tint = 0xFFFFFF
+        level1button.interactive = true
+        this.container.addChild(level1button)
+        this.levelbuttons.push(level1button)
+
+        const level2button = new PIXI.Sprite.from('src/assets/level2button.png')
+        level2button.x = 320
+        level2button.y = 150
+        level2button.zIndex = 0
+        level2button.width = 160
+        level2button.height = 160
+        level2button.tint = 0xFFFFFF
+        level2button.interactive = true
+        this.container.addChild(level2button)
+        this.levelbuttons.push(level2button)
+
+        const level3button = new PIXI.Sprite(PIXI.Texture.WHITE)
+        level3button.x = 560
+        level3button.y = 150
+        level3button.zIndex = 0
+        level3button.width = 160
+        level3button.height = 160
+        level3button.tint = 0xFFFFFF
+        level3button.interactive = true
+        this.container.addChild(level3button)
+        this.levelbuttons.push(level3button)
+
+        const level4button = new PIXI.Sprite(PIXI.Texture.WHITE)
+        level4button.x = 800
+        level4button.y = 150
+        level4button.zIndex = 0
+        level4button.width = 160
+        level4button.height = 160
+        level4button.tint = 0xFFFFFF
+        level4button.interactive = true
+        this.container.addChild(level4button)
+        this.levelbuttons.push(level4button)
+
+        const level5button = new PIXI.Sprite(PIXI.Texture.WHITE)
+        level5button.x = 1040
+        level5button.y = 150
+        level5button.zIndex = 0
+        level5button.width = 160
+        level5button.height = 160
+        level5button.tint = 0xFFFFFF
+        level5button.interactive = true
+        this.container.addChild(level5button)
+        this.levelbuttons.push(level5button)
+    }
 }
