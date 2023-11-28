@@ -456,7 +456,7 @@ app.ticker.add((delta) => {
     timeSinceLastUpdateServer += delta
     if (timeSinceLastUpdateServer > serverUpdateDelay && multiplayer && worldCode != 'offline') {
         timeSinceLastUpdateServer = 0
-        connection.sendPosition(frog.x, frog.y, 0, 0)
+        connection.sendPosition(worldCode, frog.x, frog.y, 0, 0)
     }
 })
 
