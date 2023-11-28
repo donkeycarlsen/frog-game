@@ -17,6 +17,7 @@ menu.buttons[0].on('click', (event) => {
 
     menu.buttons[1].on('click', (event) => {
         console.log('singleplayer')
+        multiplayer = false
         menu.buttons[1].y = 3000 ; menu.buttons[2].y = 3000 ; menu.buttons[3].y = 3000
         menu.loadsingleplayermenu()
             menu.levelbuttons[0].on('click', (event) =>{
@@ -39,21 +40,25 @@ menu.buttons[0].on('click', (event) => {
     
     menu.buttons[2].on('click', (event) => {
         console.log('multiplayer')
+        multiplayer = true
         menu.buttons[1].y = 3000 ; menu.buttons[2].y = 3000 ; menu.buttons[3].y = 3000
         menu.loadmultiplayermenu()
             menu.levelbuttons[0].on('click', (event) =>{
                 menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 4000 ; menu.levelbuttons[1].y = 3000 ;
                 menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
+                worldCode = 'level1'
                 loadlevel1()
             })
             menu.levelbuttons[1].on('click', (event) =>{
                 menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 4000 ;
                 menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
+                worldCode = 'level2'
                 loadlevel2()
             })
             menu.levelbuttons[2].on('click', (event) =>{
                 menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
                 menu.levelbuttons[2].y = 4000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
+                worldCode = 'level3'
                 loadlevel3()
             })
     
@@ -197,6 +202,9 @@ var cameraleft = 2000
 var cameraright = 1000
 var cameratop = 720
 var camerabot = 0
+
+var multiplayer = false
+var worldCode = 'offline'
 
 
 var makeblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF,bi=textures[0])=>{
@@ -446,7 +454,7 @@ var timeSinceLastUpdateServer = 0
 var serverUpdateDelay = 1000/300
 app.ticker.add((delta) => {
     timeSinceLastUpdateServer += delta
-    if (timeSinceLastUpdateServer > serverUpdateDelay) {
+    if (timeSinceLastUpdateServer > serverUpdateDelay && multiplayer && worldCode != 'offline') {
         timeSinceLastUpdateServer = 0
         connection.sendPosition(frog.x, frog.y, 0, 0)
     }
@@ -513,7 +521,8 @@ app.ticker.add((delta) => {
 //    bgg.x = Math.max(cameraright,-level.x)
 
    
-    connection.renderFrogs()
+    if (multiplayer && worldCode != 'offline')
+        connection.renderFrogs()
 })
 
 var jumpy = ()=>{

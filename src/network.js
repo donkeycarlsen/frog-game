@@ -128,7 +128,7 @@ class DKConnection {
         this.lastRender = Date.now()
     }
 
-    sendPosition = (xpos, ypos, xvel, yvel) => {
-        this.socket.emit('frog', xpos, ypos, xvel, yvel);
+    sendPosition = (worldCode, xpos, ypos, xvel, yvel) => {
+        this.socket.emit('frog', worldCode, xpos, ypos, xvel, yvel);
     }
 }
