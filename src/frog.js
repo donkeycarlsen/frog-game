@@ -916,6 +916,8 @@ var loadlevel2 = ()=>{
 
     makeblock(50,20,140,70,0x104911)
 
+    
+
 
 
 
@@ -938,4 +940,4 @@ var reloadlevel = ()=>{
     f = new DKplayer()
 }
 
-console.log("booty butt cheeks")
+console.log("booty butt cheeks!")
