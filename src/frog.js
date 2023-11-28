@@ -1,15 +1,9 @@
 const app = new PIXI.Application({
-    width: 1280, height: 720, backgroundColor: 0xDD8CFC, resolution: 1
+    width: 1280, height: 720, backgroundColor: 0xA7A284, resolution: 1
 })
 document.body.appendChild(app.view)
 
 
-
-var title = document.getElementById("display")
-title.innerHTML = ""
-title.style.color = "#009600"
-title.style.position = "absolute"
-title.style.top = "10px"
 
 const gui = new PIXI.Container(PIXI.Texture.WHITE)
 app.stage.addChild(gui)
@@ -34,6 +28,11 @@ menu.buttons[0].on('click', (event) => {
                 menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 4000 ;
                 menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
                 loadlevel2()
+            })
+            menu.levelbuttons[2].on('click', (event) =>{
+                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
+                menu.levelbuttons[2].y = 4000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
+                loadlevel3()
             })
 
     });
@@ -491,7 +490,7 @@ app.ticker.add((delta) => {
 
    var frogondascreenx = frog.x + level.x
    if (frogondascreenx > 400){level.x = -frog.x + 400}
-   if (frogondascreenx < 250){level.x = -frog.x + 250}
+   if (frogondascreenx < 300){level.x = -frog.x + 300}
    var frogondascreeny = frog.y + level.y
    if (frogondascreeny < 100){level.y = -frog.y + 100}
    if (frogondascreeny > 470){level.y = -frog.y + 470}
@@ -841,6 +840,91 @@ var loadlevel2 = ()=>{
 
     }
 
+    var loadlevel3 = ()=>{
+    // frog
+    frog.x = 50 ; frog.y = 670 ; speedY = 0 ; accelY = -20 ; frog.tint = 0x009600 ; //var invinciblefrog.tintforlevel = 0xFFFFFF
+    // camera
+    cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0
+    // timer
+    timerdisplay.y = 0 ; timeron1 = 50 ; timeron2 = 4070
+
+    // floor/wall
+    makeblock(0,670,10000,100,0x7C9082)
+    makeblock(0,-500,50,1500,0x7C9082)
+    makeblock(4230,-500,50,1500,0x7C9082)
+
+    // first blocks
+    spikeblock(460,650,140,20,0xF87575)
+
+    makeblock(600,570,70,100,0xEDEEC0)
+    makeblock(600,570,350,70,0xEDEEC0)
+    makeblock(880,570,70,100,0xEDEEC0)
+
+    spikeblock(950,590,20,70,0xF87575)
+
+    makeblock(810,470,70,200,0x104911)
+    makeblock(810,470,280,70,0x104911)
+    makeblock(1020,470,70,200,0x104911)
+
+    spikeblock(1020,450,70,20,0xF87575)
+    
+    // second blocks
+
+    spikeblock(1090,650,140,20,0xF87575)
+
+    makeblock(1230,500,70,170,0x104911)
+    makeblock(1230,500,350,70,0x104911)
+    makeblock(1510,500,70,170,0x104911)
+
+    spikeblock(1370,480,140,20,0xF87575)
+
+    makeblock(1405,550,70,120,0xEDEEC0)
+    makeblock(1405,550,455,70,0xEDEEC0)
+    makeblock(1790,550,70,120,0xEDEEC0)
+
+    // third blocks
+
+    spikeblock(1860,650,140,20,0xF87575)
+
+    makeblock(2210+15,100,70,570,0x104911)
+    makeblock(2210+15,100,210,70,0x104911)
+    makeblock(2350+15,100,70,570,0x104911)
+
+    makeblock(2105,350,70,320,0xEDEEC0)
+    makeblock(2105,350,210,70,0xEDEEC0)
+    makeblock(2245,350,70,320,0xEDEEC0)
+
+    makeblock(2000,450,70,220,0x104911)
+    makeblock(2000,450,195,70,0x104911)
+    makeblock(2125,450,70,220,0x104911)
+
+    launchleftblock(2215,180,10,50,0x8377D1)
+
+    // fourth blocks
+
+    makeblock(1600,230,140,70,0x104911)
+
+    makeblock(1330,200,140,70,0xEDEEC0)
+
+    makeblock(1060,215,140,70,0x104911)
+    
+    makeblock(825,115,140,70,0xEDEEC0)
+
+    makeblock(530,80,140,70,0x104911)
+
+    makeblock(290,110,140,70,0xEDEEC0)
+
+    makeblock(50,20,140,70,0x104911)
+
+
+
+
+    
+
+
+
+    }
+
 var unloadlevel = ()=>{
 terrain.children = []
 blox = []
@@ -850,6 +934,7 @@ var reloadlevel = ()=>{
     unloadlevel()
     if (menu.levelbuttons[0].y == 4000){loadlevel1()}
     if (menu.levelbuttons[1].y == 4000){loadlevel2()}
+    if (menu.levelbuttons[2].y == 4000){loadlevel3()}
     f = new DKplayer()
 }
 
