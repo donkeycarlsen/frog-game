@@ -910,23 +910,48 @@ var loadlevel2 = ()=>{
     makeblock(2000,450,195,70,0x104911)
     makeblock(2125,450,70,220,0x104911)
 
-    launchleftblock(2215,170,10,50,0x8377D1)
+    launchleftblock(2210,170,15,50,0x8FADDC)
 
     // fourth blocks
 
-    makeblock(1600,230,140,70,0x104911)
+    makeblock(1600,230,140,20,0x104911)
+    makeblock(1600,230,20,70,0x104911)
+    makeblock(1600,280,140,20,0x104911)
+    makeblock(1720,230,20,70,0x104911)
 
-    makeblock(1330,200,140,70,0xEDEEC0)
+    makeblock(1330,200,140,20,0xEDEEC0)
+    makeblock(1330,200,20,70,0xEDEEC0)
+    makeblock(1330,200+50,140,20,0xEDEEC0)
+    makeblock(1330+120,200,20,70,0xEDEEC0)
 
-    makeblock(1060,215,140,70,0x104911)
+    makeblock(1060,215,140,20,0x104911)
+    makeblock(1060,215,20,70,0x104911)
+    makeblock(1060,215+50,140,20,0x104911)
+    makeblock(1060+120,215,20,70,0x104911)
     
-    makeblock(825,115,140,70,0xEDEEC0)
+    makeblock(825,115,140,20,0xEDEEC0)
+    makeblock(825,115,20,70,0xEDEEC0)
+    makeblock(825,115+50,140,20,0xEDEEC0)
+    makeblock(825+120,115,20,70,0xEDEEC0)
 
-    makeblock(530,80,140,70,0x104911)
+    makeblock(530,80,140,20,0x104911)
+    makeblock(530,80,20,70,0x104911)
+    makeblock(530,80+50,140,20,0x104911)
+    makeblock(530+120,80,20,70,0x104911)
 
-    makeblock(290,110,140,70,0xEDEEC0)
+    makeblock(290,110,140,20,0xEDEEC0)
+    makeblock(290,110,20,70,0xEDEEC0)
+    makeblock(290,110+50,140,20,0xEDEEC0)
+    makeblock(290+120,110,20,70,0xEDEEC0)
 
-    makeblock(50,20,140,70,0x104911)
+    makeblock(50,20,140,20,0x104911)
+    makeblock(50,20,20,70,0x104911)
+    makeblock(50,20+50,140,20,0x104911)
+    makeblock(50+120,20,20,70,0x104911)
+
+    bounceblock(50,5,50,15,0x8FADDC)
+    launchrightblock(50,-100,15,50,0x8FADDC)
+
 
     
 
