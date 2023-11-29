@@ -501,7 +501,6 @@ app.ticker.add((delta) => {
         var motion = [f.standingOn.x - f.standingOnPosition[0], f.standingOn.y - f.standingOnPosition[1]]
         frog.x += motion[0]
         frog.y += motion[1]
-        //console.log(motion)
         f.standingOnPosition = [f.standingOn.x, f.standingOn.y]
     }
     networkElements.children.forEach(p => {
@@ -597,7 +596,7 @@ var wis = (block)=>{
                         frog.y = s.y - frog.height ; 
                         if (speedY < 0){speedY = 0} ; 
                         if (speedY == 0 && movingUp){jumpy()} 
-                        if (f.standingOn == null) {console.log('new stand'); f.standingOnPosition = [s.x, s.y]}; 
+                        if (f.standingOn == null) {f.standingOnPosition = [s.x, s.y]}; 
                         f.standingOn = s; 
                     }
                 }
@@ -605,10 +604,10 @@ var wis = (block)=>{
                     if (mincollision == 0){frog.x = s.x + s.width}
                     if (mincollision == 1){frog.x = s.x - frog.width}
                     if (mincollision == 2){
-                        frog.y = s.y + s.height ; 
-                        if (speedY > 0){speedY = 0} ; 
+                        frog.y = s.y + s.height; 
+                        if (speedY > 0){speedY = 0}; 
                         if (speedY == 0 && movingUp){jumpy()}; 
-                        if (f.standingOn == null) {console.log('new stand');f.standingOnPosition = [s.x, s.y]}; 
+                        if (f.standingOn == null) {f.standingOnPosition = [s.x, s.y]}; 
                         f.standingOn = s; 
                     }     
                     if (mincollision == 3){frog.y = s.y - frog.height ; if (speedY < 0){speedY = -(0.5 * speedY)}}
@@ -617,13 +616,15 @@ var wis = (block)=>{
         } else {
             if (f.standingOn == s && Math.abs(frog.y - (s.y - frog.height)) > 0.2) {
                 f.standingOn = null
-                console.log('what ' + Math.abs(frog.y - (s.y - frog.height)))
             }
         }
 
         if (block.baseMovementPath != null) {
             var perc = (((Date.now()-timer)/1000)/block.baseMovementDuration) % 1.0
-            perc = block.baseMovementReverse ? (perc > 0.5 ? 1.0 - (perc - 0.5)*2 : perc * 2) : perc
+            perc = block.baseMovementReverse 
+                ? (perc > 0.5 ? 1.0 - (perc - 0.5)*2 : perc * 2) 
+                : perc
+
             var newPos = block.baseMovementPath.getPosition(perc)
             s.x = newPos[0]
             s.y = newPos[1]
@@ -990,10 +991,11 @@ var loadlevel2 = ()=>{
     launchrightblock(50,-100,15,50,0x8FADDC)
 
 
-    var movp = new PKPath([[200, -100], [800, -400]])
+    var movp = new PKPath([[200, -100], [200, -300], [400, -300], [400, -100], [200, -100]])
     movp.percfunc = movp.easeInAndOutPosition(2)
     makeblock(50,20,140,20,0x104911)
     blox[blox.length - 1].baseMovementPath = movp
+    blox[blox.length - 1].baseMovementReverse = false
     
 
 
