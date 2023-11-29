@@ -465,15 +465,22 @@ app.ticker.add((delta) => {
     }
 })
 
-var timeron1 = 0
-var timeron2 = 0
+
+var started = false
+var finished = false
+var spawnx = 0
+var spawny = 0
+var finishx = 0
+var finishy = 0
 
 app.ticker.add((delta) => {
 
-    // // new level timer 
-    if (frog.x > timeron1 && frog.x < timeron2){timerdisplay.text=((Date.now()-timer)/1000)}
+    /// timer 
+    if ((frog.x != spawnx) || (frog.y != spawny)){started = true}
+    if ((started == true) && (finished == false)){timerdisplay.text=((Date.now()-timer)/1000)}
     else{timer = Date.now()}
-    if (timer == Date.now() && frog.x > 4070 && frog.y < 400){frog.y = 670}
+    if ((frog.x > finishx) && (frog.y < finishy)){finished = true}
+
 
     if (movingRight == movingLeft){speedX = 0}
     else {
@@ -673,12 +680,15 @@ var handlePlayerCollision = (p)=>{
 
 
 var loadlevel1 = ()=>{
+    // spawn / finish
+    spawnx = 50 ; spawny = 620 ; finishx = 4070 ; finishy = 670 ; started = false ; finished = false
     // frog
-    frog.x = 50 ; frog.y = 670 ; speedY = 0 ; accelY = -20 ; frog.tint = 0x009600 ; //var invinciblefrog.tintforlevel = 0xFFFFFF
+    frog.x = spawnx ; frog.y = spawny ; speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0; frog.tint = 0x009600 ; //var invinciblefrog.tintforlevel = 0xFFFFFF
     // camera
     cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0
     // timer
-    timerdisplay.y = 0 ; timeron1 = 50 ; timeron2 = 4070
+    timerdisplay.y = 0 ; timerdisplay.text = "0.000"
+    //
 
     // floor/wall
     makeblock(0,670,10000,100,0x000000)
@@ -766,12 +776,15 @@ var loadlevel1 = ()=>{
 }
 
 var loadlevel2 = ()=>{
-     // frog
-    frog.x = 50 ; frog.y = 670 ; speedY = 0 ; accelY = -20 ; frog.tint = 0x009600 ; //var invinciblefrog.tintforlevel = 0xFFFFFF
+    // spawn / finish
+    spawnx = 50 ; spawny = 620 ; finishx = 4070 ; finishy = 670 ; started = false ; finished = false
+    // frog
+    frog.x = spawnx ; frog.y = spawny ; speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0; frog.tint = 0x009600 ; //var invinciblefrog.tintforlevel = 0xFFFFFF
     // camera
     cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0
     // timer
-    timerdisplay.y = 0 ; timeron1 = 50 ; timeron2 = 4070
+    timerdisplay.y = 0 ; timerdisplay.text = "0.000"
+    //
 
     // background in first tunnel
     // backgroundblock(2040,-270,320,200,0x6250A7)
@@ -891,12 +904,15 @@ var loadlevel2 = ()=>{
     }
 
     var loadlevel3 = ()=>{
+    // spawn / finish
+    spawnx = 50 ; spawny = 620 ; finishx = 4070 ; finishy = 670 ; started = false ; finished = false
     // frog
-    frog.x = 50 ; frog.y = 670 ; speedY = 0 ; accelY = -20 ; frog.tint = 0x009600 ; //var invinciblefrog.tintforlevel = 0xFFFFFF
+    frog.x = spawnx ; frog.y = spawny ; speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0; frog.tint = 0x009600 ; //var invinciblefrog.tintforlevel = 0xFFFFFF
     // camera
     cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0
     // timer
-    timerdisplay.y = 0 ; timeron1 = 50 ; timeron2 = 4070
+    timerdisplay.y = 0 ; timerdisplay.text = "0.000"
+    //
 
     // floor/wall
     makeblock(0,670,10000,100,0x7C9082)
