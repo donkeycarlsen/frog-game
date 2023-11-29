@@ -603,7 +603,7 @@ var wis = (block)=>{
                         frog.y = s.y - frog.height ; 
                         if (speedY < 0){speedY = 0} ; 
                         if (speedY == 0 && movingUp){jumpy()} 
-                        if (f.standingOn == null) {f.standingOnPosition = [s.x, s.y]}; 
+                        f.standingOnPosition = [s.x, s.y] 
                         f.standingOn = s; 
                     }
                 }
@@ -614,7 +614,7 @@ var wis = (block)=>{
                         frog.y = s.y + s.height; 
                         if (speedY > 0){speedY = 0}; 
                         if (speedY == 0 && movingUp){jumpy()}; 
-                        if (f.standingOn == null) {f.standingOnPosition = [s.x, s.y]}; 
+                        f.standingOnPosition = [s.x, s.y] 
                         f.standingOn = s; 
                     }     
                     if (mincollision == 3){frog.y = s.y - frog.height ; if (speedY < 0){speedY = -(0.5 * speedY)}}
