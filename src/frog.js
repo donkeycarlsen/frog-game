@@ -900,8 +900,8 @@ var loadlevel2 = ()=>{
 
     // floor/wall
     makeblock(0,670,10000,100,0x7C9082)
-    makeblock(0,-500,50,1500,0x7C9082)
-    makeblock(4230,-500,50,1500,0x7C9082)
+    makeblock(0,-1000,50,2000,0x7C9082)
+    makeblock(4230,-1000,50,2000,0x7C9082)
 
     // first blocks
     spikeblock(460,650,140,20,0xF87575)
@@ -931,6 +931,8 @@ var loadlevel2 = ()=>{
     makeblock(1405,550,70,120,0xEDEEC0)
     makeblock(1405,550,455,70,0xEDEEC0)
     makeblock(1790,550,70,120,0xEDEEC0)
+
+    spikeblock(1680,620,70,20,0xF87575)
 
     // third blocks
 
@@ -988,10 +990,41 @@ var loadlevel2 = ()=>{
     makeblock(50+120,20,20,70,0x104911)
 
     bounceblock(50,5,50,15,0x8FADDC)
-    launchrightblock(50,-100,15,50,0x8FADDC)
+    launchrightblock(50,-275,15,50,0x8FADDC)
+
+    // third height
+
+    makeblock(430,-200,280,20,0x104911)
+    makeblock(430,-200,20,70,0x104911)
+    makeblock(430,-150,210,20,0x104911)
+    makeblock(430+210,-200,20,70,0x104911)
+    makeblock(640,-270,70,20,0x104911)
+    makeblock(640,-270,20,70,0x104911)
+    makeblock(640+50,-270,20,70,0x104911)
+
+    
+
+    makeblock(900,-330,280,20,0xEDEEC0)
+    makeblock(900,-330,20,70,0xEDEEC0)
+    makeblock(900,-330+50,280,20,0xEDEEC0)
+    makeblock(900+260,-330,20,70,0xEDEEC0)
+    makeblock(900+280,-330-70,20,210,0x104911)
+    makeblock(900+280,-330-70,70,20,0x104911)
+    makeblock(900+280,-330-70+190,70,20,0x104911)
+    makeblock(900+280+50,-330-70,20,210,0x104911)
+
+    spikeblock(900+280-50,-330-20+90,50,20,0xF87575)
+    
+
+    makeblock(1510,-340,)
+
+    makeblock(1380,-330-70,210,20,0xEDEEC0)
+    makeblock(1380,-330-70+120,210,20,0xEDEEC0)
+    makeblock(1380,-330-70,20,140,0xEDEEC0)
+    makeblock(1380+190,-330-70,20,140,0xEDEEC0)
 
 
-    var movp = new PKPath([[200, -100], [200, -300], [400, -300], [400, -100], [200, -100]])
+    var movp = new PKPath([[2200, -100], [2200, -300], [2400, -300], [2400, -100], [2200, -100]])
     movp.percfunc = movp.easeInAndOutPosition(2)
     makeblock(50,20,140,20,0x104911)
     blox[blox.length - 1].baseMovementPath = movp
