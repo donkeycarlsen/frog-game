@@ -145,12 +145,17 @@ const terrain = new PIXI.Container(PIXI.Texture.WHITE)
 // PIXI.Sprite(PIXI.Texture.WHITE)
 // PIXI.Sprite.from('src/assets/frog.png');
 
+const frogtexturesittingright = PIXI.Texture.from('src/assets/frogsittingright.png')
+const frogtexturesittingleft = PIXI.Texture.from('src/assets/frogsittingleft.png')
+var frogtextures = [frogtexturesittingright,frogtexturesittingleft]
+
 const frog = new PIXI.Sprite(PIXI.Texture.WHITE)
 frog.tint = 0x009600
 frog.width = 50
 frog.height = 50
 frog.x = -2000     // 50
 frog.y = 1000    // 670
+frog.texture = frogtextures[0]
 level.addChild(frog)
 
 var f = new DKplayer()
@@ -160,7 +165,7 @@ f.sprite = frog
 
 const texture0 = PIXI.Texture.from('src/assets/texture0.png');
 texture0.baseTexture.wrapMode = PIXI.WRAP_MODES.MIRRORED_REPEAT;
-const texture1 = PIXI.Texture.from('src/assets/texture1.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT});
+const texture1 = PIXI.Texture.from('src/assets/block1.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT});
 var textures = [texture0,texture1]
 
 
@@ -374,6 +379,24 @@ var launchleftblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
 
 }
 
+var textureover = (bx,by,bw=80,bh=80,bc=0xFFFFFF,bt)=>{
+    const bblock = new PIXI.Sprite(PIXI.Texture.WHITE)
+    bblock.x = bx
+    bblock.y = by
+    bblock.width = bw
+    bblock.height = bh
+    bblock.tint = bc
+    bblock.texture = bt
+    terrain.addChild(bblock)
+
+    var b = new DKblock()
+    b.sprite = bblock
+    b.touchable = false
+
+    blox.push(b)
+
+}
+
 
 
 var invinciblepowerup = (bx,by,bw=40,bh=40,bc=0xFFFFFF)=>{
@@ -414,6 +437,8 @@ var blox = []
 window.addEventListener("keydown", function(e) {
    if (e.key == "ArrowRight"){movingRight = true}
    if (e.key == "ArrowLeft"){movingLeft = true}
+   if (e.key == "d"){movingRight = true}
+   if (e.key == "a"){movingLeft = true}
    if (e.key == "ArrowUp"){if(movingUp == false){timejumped = Date.now()} ; movingUp = true}
     // if (e.key == "2"){unloadlevel()}
     // if (e.key == "1"){loadlevel1()}
@@ -425,20 +450,22 @@ window.addEventListener("keydown", function(e) {
 window.addEventListener("keyup", function(e) {
     if (e.key == "ArrowRight"){movingRight = false}
     if (e.key == "ArrowLeft"){movingLeft = false}
+    if (e.key == "d"){movingRight = false}
+    if (e.key == "a"){movingLeft = false}
     if (e.key == "ArrowUp"){movingUp = false ; timejumped = 0 ; canjumpy = true}
 })
 
-window.addEventListener("keydown", function(e) {
-    if (e.key == "d"){movingRight = true}
-    if (e.key == "a"){movingLeft = true}
-    if (e.key == "w"){if(movingUp == false){timejumped = Date.now()} ; movingUp = true}
- })
- // if(movingUp == false){timejumped = Date.now()}
- window.addEventListener("keyup", function(e) {
-     if (e.key == "d"){movingRight = false}
-     if (e.key == "a"){movingLeft = false}
-     if (e.key == "w"){movingUp = false ; timejumped = 0 ; canjumpy = true}
- })
+// window.addEventListener("keydown", function(e) {
+//     if (e.key == "d"){movingRight = true}
+//     if (e.key == "a"){movingLeft = true}
+//     if (e.key == "w"){if(movingUp == false){timejumped = Date.now()} ; movingUp = true}
+//  })
+//  // if(movingUp == false){timejumped = Date.now()}
+//  window.addEventListener("keyup", function(e) {
+//      if (e.key == "d"){movingRight = false}
+//      if (e.key == "a"){movingLeft = false}
+//      if (e.key == "w"){movingUp = false ; timejumped = 0 ; canjumpy = true}
+//  })
 
 var connection = new DKConnection()
 connection.connect()
@@ -477,8 +504,8 @@ app.ticker.add((delta) => {
 
     if (movingRight == movingLeft){speedX = 0}
     else {
-        if (movingRight){speedX = -50}
-        if (movingLeft){speedX = 50}
+        if (movingRight){speedX = -50 ; frog.texture = frogtextures[0]}
+        if (movingLeft){speedX = 50 ; frog.texture = frogtextures[1]}
 
         }
 
@@ -900,7 +927,7 @@ var loadlevel2 = ()=>{
     // spawn / finish
     spawnx = 50 ; spawny = 620 ; finishx = 4070 ; finishy = 670 ; started = false ; finished = false
     // frog
-    frog.x = spawnx ; frog.y = spawny ; speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0; frog.tint = 0x009600 ; //var invinciblefrog.tintforlevel = 0xFFFFFF
+    frog.x = spawnx ; frog.y = spawny ; speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0; frog.tint = 0xFFFFFF ; //var invinciblefrog.tintforlevel = 0xFFFFFF
     // camera
     cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0
     // timer
@@ -924,6 +951,8 @@ var loadlevel2 = ()=>{
     makeblock(810,470,70,200,0x104911)
     makeblock(810,470,280,70,0x104911)
     makeblock(1020,470,70,200,0x104911)
+
+    textureover(600,470,490,200,0xFFFFFF,textures[1])
 
     spikeblock(1020,450,70,20,0xF87575)
     
