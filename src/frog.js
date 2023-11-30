@@ -142,15 +142,8 @@ const terrain = new PIXI.Container(PIXI.Texture.WHITE)
 
 
 
-
-// const realassfrog = PIXI.Texture.from('src/assets/frog.png');
-
-// const frog = new PIXI.Sprite(realassfrog)
-// frog.width = 50
-// frog.height = 50
-// frog.x = 50
-// frog.y = 670
-// level.addChild(frog)
+// PIXI.Sprite(PIXI.Texture.WHITE)
+// PIXI.Sprite.from('src/assets/frog.png');
 
 const frog = new PIXI.Sprite(PIXI.Texture.WHITE)
 frog.tint = 0x009600
@@ -1032,10 +1025,13 @@ var loadlevel2 = ()=>{
     spikeblock(900+280-50,-330-20+90,50,20,0xF87575)
     
 
-    makeblock(1510,-340,)
+    makeblock(1380+190-40,-330-70+120-40,220,20,0x104911)
+    makeblock(1380+190-40,-330-70+120-40,20,100,0x104911)
+    makeblock(1380+190-40+20,-330-70+120-40+80,220-40,20,0x104911)
+    makeblock(1380+190-40+200,-330-70+120-40,20,100,0x104911)
 
     makeblock(1380,-330-70,210,20,0xEDEEC0)
-    makeblock(1380,-330-70+120,210,20,0xEDEEC0)
+    makeblock(1380+20,-330-70+120,210-20,20,0xEDEEC0)
     makeblock(1380,-330-70,20,140,0xEDEEC0)
     makeblock(1380+190,-330-70,20,140,0xEDEEC0)
 
