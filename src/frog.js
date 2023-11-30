@@ -166,7 +166,8 @@ f.sprite = frog
 const texture0 = PIXI.Texture.from('src/assets/texture0.png');
 texture0.baseTexture.wrapMode = PIXI.WRAP_MODES.MIRRORED_REPEAT;
 const texture1 = PIXI.Texture.from('src/assets/block1.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT});
-var textures = [texture0,texture1]
+const texture2 = PIXI.Texture.from('src/assets/block2.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT});
+var textures = [texture0,texture1,texture2]
 
 
 
@@ -969,6 +970,8 @@ var loadlevel2 = ()=>{
     makeblock(1405,550,70,120,0xEDEEC0)
     makeblock(1405,550,455,70,0xEDEEC0)
     makeblock(1790,550,70,120,0xEDEEC0)
+
+    textureover(1230,500,630,170,0xFFFFFF,textures[2])
 
     spikeblock(1680,620,70,20,0xF87575)
 
