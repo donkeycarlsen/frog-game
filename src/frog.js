@@ -598,10 +598,10 @@ app.ticker.add((delta) => {
         wis(b)
     });
     if (f.standingOn != null) {
-        var motion = [f.standingOn.x - f.standingOnPosition[0], f.standingOn.y - f.standingOnPosition[1]]
+        var motion = [f.standingOn.sprite.x - f.standingOnPosition[0], f.standingOn.sprite.y - f.standingOnPosition[1]]
         frog.x += motion[0]
         frog.y += motion[1]
-        f.standingOnPosition = [f.standingOn.x, f.standingOn.y]
+        f.standingOnPosition = [f.standingOn.sprite.x, f.standingOn.sprite.y]
     }
     networkElements.children.forEach(p => {
         handlePlayerCollision(p)
@@ -697,7 +697,7 @@ var wis = (block)=>{
                         if (speedY < 0){speedY = 0} ; 
                         if (speedY == 0 && movingUp){jumpy()} 
                         f.standingOnPosition = [s.x, s.y] 
-                        f.standingOn = s; 
+                        f.standingOn = block; 
                     }
                 }
                 else {
@@ -708,7 +708,7 @@ var wis = (block)=>{
                         if (speedY > 0){speedY = 0}; 
                         if (speedY == 0 && movingUp){jumpy()}; 
                         f.standingOnPosition = [s.x, s.y] 
-                        f.standingOn = s; 
+                        f.standingOn = block; 
                     }     
                     if (mincollision == 3){frog.y = s.y - frog.height ; if (speedY < 0){speedY = -(0.5 * speedY)}}
                 }
