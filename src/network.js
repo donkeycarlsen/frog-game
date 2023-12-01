@@ -31,6 +31,10 @@ class DKConnection {
         // console.log(`Received message from server: ${message}`);
         });
 
+        this.socket.on('leaderboard',(worldCode,lbData) => {
+            this.populateTable(lbData)
+        })
+
         this.socket.on('otherFrogs', (frogs) => {
             var delta = Date.now() - this.receivedLastFrogDataPacket
             // console.log(`Received message from server: ${frogs}`);
@@ -68,6 +72,32 @@ class DKConnection {
     setColor = () => {
         this.socket.emit('setColor', '');
     }
+
+    populateTable = (data)=>{
+        const tbody = document.getElementById('leaderboard-body');
+    
+        // Clear existing rows
+        tbody.innerHTML = '';
+    
+        // Loop through the data and create rows for each object
+        data.forEach(item => {
+            const row = document.createElement('tr');
+    
+            const usernameCell = document.createElement('td');
+            usernameCell.textContent = item.username;
+    
+            const timeCell = document.createElement('td');
+            timeCell.textContent = item.time;
+    
+            row.appendChild(usernameCell);
+            row.appendChild(timeCell);
+    
+            tbody.appendChild(row);
+        });
+    }
+    
+    // // Call the function to populate the table with the data
+    // populateTable(leaderboardData);
 
     renderFrogs = () => {
         while (this.levelElements.children.length < this.otherFrogs.length) {
@@ -130,5 +160,9 @@ class DKConnection {
 
     sendPosition = (worldCode, xpos, ypos, xvel, yvel) => {
         this.socket.emit('frog', worldCode, xpos, ypos, xvel, yvel);
+    }
+
+    sendTime = (worldCode,time) => {
+        this.socket.emit('levelTime',worldCode,time,this.playerName)
     }
 }

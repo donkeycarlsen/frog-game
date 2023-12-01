@@ -556,15 +556,14 @@ var spawny = 0
 var finishx = 0
 var finishy = 0
 
-var times = []
-
 app.ticker.add((delta) => {
 
     /// timer 
     if ((frog.x != spawnx) || (frog.y != spawny)){started = true}
     if ((started == true) && (finished == false)){timerdisplay.text=((Date.now()-timer)/1000)}
     else{timer = Date.now()}
-    if ((frog.x > finishx) && (frog.y < finishy) && (!finished)){finished = true ; times.push(timerdisplay.text)}
+    if ((frog.x > finishx) && (frog.y < finishy) && (!finished)){finished = true ;
+        connection.sendTime(worldCode,parseFloat(timerdisplay.text))}
 
 
     // ice
@@ -1174,6 +1173,7 @@ var loadlevel2 = ()=>{
 
         // first blocks
         iceblock(460,590,1400,80,0x89CFF0)
+        makeblock(460,590-90-70,1400,80,0xFFFFFF)
 
     }
 
