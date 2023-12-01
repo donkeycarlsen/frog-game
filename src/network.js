@@ -61,7 +61,8 @@ class DKConnection {
         inputElement.addEventListener("change", function() {
             ths.playerName = inputElement.value;
             console.log("Name changed to: " + ths.playerName);
-            ths.setUsername()
+            ths.setUsername(ths.playerName)
+            document.cookie = `username=${encodeURIComponent(ths.playerName)}; expires=Thu, 31 Dec 2099 23:59:59 UTC; path=/`;
         });
     }
 

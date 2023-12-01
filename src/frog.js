@@ -3,7 +3,27 @@ const app = new PIXI.Application({
 })
 document.body.appendChild(app.view)
 
+var inputElement = document.getElementById("usernameInput");
 
+function getCookie(name) {
+    const cookies = document.cookie.split(';');
+    for (const cookie of cookies) {
+        const [cookieName, cookieValue] = cookie.trim().split('=');
+        if (cookieName === name) {
+        return decodeURIComponent(cookieValue);
+        }
+    }
+    return null;
+}
+window.addEventListener('load', () => {
+const savedUsername = getCookie('username');
+console.log(`User: ${savedUsername}`)
+if (savedUsername !== null) {
+    inputElement.value = savedUsername;
+    connection.playerName = savedUsername
+    connection.setUsername(savedUsername)
+}
+});
 
 const gui = new PIXI.Container(PIXI.Texture.WHITE)
 app.stage.addChild(gui)
@@ -23,46 +43,13 @@ menu.buttons[0].on('click', (event) => {
             menu.levelbuttons[0].on('click', (event) =>{
                 menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 4000 ; menu.levelbuttons[1].y = 3000 ;
                 menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
-                loadlevel1()
-            })
-            menu.levelbuttons[1].on('click', (event) =>{
-                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 4000 ;
-                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
-                loadlevel2()
-            })
-            menu.levelbuttons[2].on('click', (event) =>{
-                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
-                menu.levelbuttons[2].y = 4000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
-                loadlevel3() ; music[0].play()
-            })
-            menu.levelbuttons[3].on('click', (event) =>{
-                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
-                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 4000 ; menu.levelbuttons[4].y = 3000
-                loadlevel4()
-            })
-            menu.levelbuttons[4].on('click', (event) =>{
-                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
-                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 4000
-                loadlevel5()
-            })
-
-    });
-    
-    menu.buttons[2].on('click', (event) => {
-        console.log('multiplayer')
-        multiplayer = true
-        menu.buttons[1].y = 3000 ; menu.buttons[2].y = 3000 ; menu.buttons[3].y = 3000
-        menu.loadmultiplayermenu()
-            menu.levelbuttons[0].on('click', (event) =>{
-                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 4000 ; menu.levelbuttons[1].y = 3000 ;
-                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
                 worldCode = 'level1'
                 loadlevel1()
             })
             menu.levelbuttons[1].on('click', (event) =>{
                 menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 4000 ;
                 menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
-                worldCode = 'level2'
+                worldCode = 'level1'
                 loadlevel2()
             })
             menu.levelbuttons[2].on('click', (event) =>{
@@ -81,6 +68,44 @@ menu.buttons[0].on('click', (event) => {
                 menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
                 menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 4000
                 worldCode = 'level5'
+                loadlevel5()
+            })
+
+    });
+    
+    menu.buttons[2].on('click', (event) => {
+        console.log('multiplayer')
+        multiplayer = true
+        menu.buttons[1].y = 3000 ; menu.buttons[2].y = 3000 ; menu.buttons[3].y = 3000
+        menu.loadmultiplayermenu()
+            menu.levelbuttons[0].on('click', (event) =>{
+                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 4000 ; menu.levelbuttons[1].y = 3000 ;
+                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
+                worldCode = 'level1online'
+                loadlevel1()
+            })
+            menu.levelbuttons[1].on('click', (event) =>{
+                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 4000 ;
+                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
+                worldCode = 'level2online'
+                loadlevel2()
+            })
+            menu.levelbuttons[2].on('click', (event) =>{
+                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
+                menu.levelbuttons[2].y = 4000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
+                worldCode = 'level3online'
+                loadlevel3() ; music[0].play()
+            })
+            menu.levelbuttons[3].on('click', (event) =>{
+                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
+                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 4000 ; menu.levelbuttons[4].y = 3000
+                worldCode = 'level4online'
+                loadlevel4()
+            })
+            menu.levelbuttons[4].on('click', (event) =>{
+                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
+                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 4000
+                worldCode = 'level5online'
                 loadlevel5()
             })
     
