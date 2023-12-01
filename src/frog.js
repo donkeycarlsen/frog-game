@@ -501,6 +501,7 @@ window.addEventListener("keydown", function(e) {
    if (e.key == "d"){movingRight = true}
    if (e.key == "a"){movingLeft = true}
    if (e.key == "ArrowUp"){if(movingUp == false){timejumped = Date.now()} ; movingUp = true}
+   if (e.key == "w"){if(movingUp == false){timejumped = Date.now()} ; movingUp = true}
     // if (e.key == "2"){unloadlevel()}
     // if (e.key == "1"){loadlevel1()}
     if (e.key == "r"){reloadlevel()}
@@ -514,6 +515,7 @@ window.addEventListener("keyup", function(e) {
     if (e.key == "d"){movingRight = false}
     if (e.key == "a"){movingLeft = false}
     if (e.key == "ArrowUp"){movingUp = false ; timejumped = 0 ; canjumpy = true}
+    if (e.key == "w"){movingUp = false ; timejumped = 0 ; canjumpy = true}
 })
 
 // window.addEventListener("keydown", function(e) {
