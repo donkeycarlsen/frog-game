@@ -61,6 +61,18 @@ menu.buttons[0].on('click', (event) => {
                 worldCode = 'level3'
                 loadlevel3()
             })
+            menu.levelbuttons[3].on('click', (event) =>{
+                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
+                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 4000 ; menu.levelbuttons[4].y = 3000
+                worldCode = 'level4'
+                loadlevel4()
+            })
+            menu.levelbuttons[2].on('click', (event) =>{
+                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
+                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 4000
+                worldCode = 'level5'
+                loadlevel5()
+            })
     
         });
     
@@ -494,13 +506,15 @@ var spawny = 0
 var finishx = 0
 var finishy = 0
 
+var times = []
+
 app.ticker.add((delta) => {
 
     /// timer 
     if ((frog.x != spawnx) || (frog.y != spawny)){started = true}
     if ((started == true) && (finished == false)){timerdisplay.text=((Date.now()-timer)/1000)}
     else{timer = Date.now()}
-    if ((frog.x > finishx) && (frog.y < finishy)){finished = true}
+    if ((frog.x > finishx) && (frog.y < finishy) && (!finished)){finished = true ; times.push(timerdisplay.text)}
 
 
     if (movingRight == movingLeft){speedX = 0}
@@ -943,15 +957,11 @@ var loadlevel2 = ()=>{
     // first blocks
     spikeblock(460,650,140,20,0xF87575)
 
-    makeblock(600,570,70,100,0xEDEEC0)
-    makeblock(600,570,350,70,0xEDEEC0)
-    makeblock(880,570,70,100,0xEDEEC0)
+    makeblock(600,570,210,100,0x000000)
 
     spikeblock(950,590,20,70,0xF87575)
 
-    makeblock(810,470,70,200,0x104911)
-    makeblock(810,470,280,70,0x104911)
-    makeblock(1020,470,70,200,0x104911)
+    makeblock(810,470,200,200,0x104911)
 
     textureover(600,470,490,200,0xFFFFFF,textures[1])
 
@@ -1079,6 +1089,31 @@ var loadlevel2 = ()=>{
 
     }
 
+    var loadlevel4 = ()=>{
+        // spawn / finish
+        spawnx = 50 ; spawny = 620 ; finishx = 4070 ; finishy = 670 ; started = false ; finished = false
+        // frog
+        frog.x = spawnx ; frog.y = spawny ; speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0; frog.tint = 0xFFFFFF ; //var invinciblefrog.tintforlevel = 0xFFFFFF
+        // camera
+        cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0
+        // timer
+        timerdisplay.y = 0 ; timerdisplay.text = "0.000"
+        //
+    }
+
+    var loadlevel5 = ()=>{
+        // spawn / finish
+        spawnx = 50 ; spawny = 620 ; finishx = 4070 ; finishy = 670 ; started = false ; finished = false
+        // frog
+        frog.x = spawnx ; frog.y = spawny ; speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0; frog.tint = 0xFFFFFF ; //var invinciblefrog.tintforlevel = 0xFFFFFF
+        // camera
+        cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0
+        // timer
+        timerdisplay.y = 0 ; timerdisplay.text = "0.000"
+        //
+    }
+
+
 var unloadlevel = ()=>{
 terrain.children = []
 blox = []
@@ -1089,6 +1124,8 @@ var reloadlevel = ()=>{
     if (menu.levelbuttons[0].y == 4000){loadlevel1()}
     if (menu.levelbuttons[1].y == 4000){loadlevel2()}
     if (menu.levelbuttons[2].y == 4000){loadlevel3()}
+    if (menu.levelbuttons[3].y == 4000){loadlevel4()}
+    if (menu.levelbuttons[4].y == 4000){loadlevel5()}
     f = new DKplayer()
 }
 
