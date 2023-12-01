@@ -192,7 +192,7 @@ const texture2 = PIXI.Texture.from('src/assets/block2.png',{wrapMode:PIXI.WRAP_M
 
 var music = []
 var musiclevel3 = new Audio('src/music/FROG_1_v2_a_mix.mp3')
-musiclevel3.volume = 0.5
+musiclevel3.volume = 0.3
 musiclevel3.addEventListener('ended', function() {
     this.currentTime = 0;
     this.play();
