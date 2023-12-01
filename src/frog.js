@@ -69,7 +69,7 @@ menu.buttons[0].on('click', (event) => {
                 menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
                 menu.levelbuttons[2].y = 4000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
                 worldCode = 'level3'
-                loadlevel3()
+                loadlevel3() ; music[0].play()
             })
             menu.levelbuttons[3].on('click', (event) =>{
                 menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
