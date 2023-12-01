@@ -78,7 +78,7 @@ class DKConnection {
     
         // Clear existing rows
         tbody.innerHTML = '';
-    
+        console.log(data)
         // Loop through the data and create rows for each object
         data.forEach(item => {
             const row = document.createElement('tr');
