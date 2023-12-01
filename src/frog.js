@@ -33,7 +33,17 @@ menu.buttons[0].on('click', (event) => {
             menu.levelbuttons[2].on('click', (event) =>{
                 menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
                 menu.levelbuttons[2].y = 4000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
-                loadlevel3()
+                loadlevel3() ; music[0].play()
+            })
+            menu.levelbuttons[3].on('click', (event) =>{
+                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
+                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 4000 ; menu.levelbuttons[4].y = 3000
+                loadlevel4()
+            })
+            menu.levelbuttons[4].on('click', (event) =>{
+                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
+                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 4000
+                loadlevel5()
             })
 
     });
@@ -67,7 +77,7 @@ menu.buttons[0].on('click', (event) => {
                 worldCode = 'level4'
                 loadlevel4()
             })
-            menu.levelbuttons[2].on('click', (event) =>{
+            menu.levelbuttons[4].on('click', (event) =>{
                 menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
                 menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 4000
                 worldCode = 'level5'
@@ -111,6 +121,7 @@ class DKblock {
     launchright = false
     launchleft = false
     swim = false
+    ice = 0
 
     baseMovementPath = null
     baseMovementDuration = 5.0
@@ -174,13 +185,19 @@ var f = new DKplayer()
 f.sprite = frog
 
 
+var textures = []
+const texture0 = PIXI.Texture.from('src/assets/texture0.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture0)
+const texture1 = PIXI.Texture.from('src/assets/block1.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture1)
+const texture2 = PIXI.Texture.from('src/assets/block2.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture2)
 
-const texture0 = PIXI.Texture.from('src/assets/texture0.png');
-texture0.baseTexture.wrapMode = PIXI.WRAP_MODES.MIRRORED_REPEAT;
-const texture1 = PIXI.Texture.from('src/assets/block1.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT});
-const texture2 = PIXI.Texture.from('src/assets/block2.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT});
-var textures = [texture0,texture1,texture2]
-
+var music = []
+var musiclevel3 = new Audio('src/music/FROG_1_v2_a_mix.mp3')
+musiclevel3.volume = 0.5
+musiclevel3.addEventListener('ended', function() {
+    this.currentTime = 0;
+    this.play();
+}, false);
+music.push(musiclevel3)
 
 
 var timer = Date.now()
@@ -427,7 +444,20 @@ var layoutblock = (bx,by,bw=80,bh=80,bc=0x000000,pp=0)=>{
 
 }
 
+var iceblock = (bx,by,bw=80,bh=80,bc=0x89CFF0,yogurl=1) => {
+    const iceblock = new PIXI.Sprite(PIXI.Texture.WHITE)
+    iceblock.x = bx
+    iceblock.y = by
+    iceblock.width = bw
+    iceblock.height = bh
+    iceblock.tint = bc
+    terrain.addChild(iceblock)
 
+    var b = new DKblock()
+    b.sprite = iceblock
+    b.ice = yogurl
+    blox.push(b)
+}
 
 
 var invinciblepowerup = (bx,by,bw=40,bh=40,bc=0xFFFFFF)=>{
@@ -535,12 +565,22 @@ app.ticker.add((delta) => {
     if ((frog.x > finishx) && (frog.y < finishy) && (!finished)){finished = true ; times.push(timerdisplay.text)}
 
 
-    if (movingRight == movingLeft){speedX = 0}
+    // ice
+    var iceJJFish = f.standingOn?.ice || 0
+    if (iceJJFish > 0) {
+        if (movingLeft) {
+            accelX = 5 * iceJJFish
+        }
+        else if (movingRight) {
+            accelX = -5 * iceJJFish
+        }
+        if (movingRight == movingLeft) {accelX = 0 ; frog.texture = frogtextures[0] ; speedX *= 0.95}
+    }
     else {
         if (movingRight){speedX = -50 ; frog.texture = frogtextures[0]}
         if (movingLeft){speedX = 50 ; frog.texture = frogtextures[1]}
-
-        }
+        if (movingRight == movingLeft){speedX = 0}
+    }
 
     
     frog.x -= (speedX * delta * 0.2) - (excessSpeedXright * delta * 0.2) - (excessSpeedXleft * delta * 0.2)
@@ -674,8 +714,16 @@ var wis = (block)=>{
                 }
             }
         } else {
-            if (f.standingOn == s && Math.abs(frog.y - (s.y - frog.height)) > 0.2) {
+            if (f.standingOn == block && Math.abs(frog.y - (s.y - frog.height)) > 0.2) {
                 f.standingOn = null
+                // ice
+                if (block.ice > 0) {
+                    if (speedX < 0) {
+                        excessSpeedXright -= speedX
+                    } else {
+                        excessSpeedXleft -= speedX
+                    }
+                }
             }
         }
 
@@ -964,7 +1012,7 @@ var loadlevel2 = ()=>{
     // camera
     cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0
     // timer
-    timerdisplay.y = 0 ; timerdisplay.text = "0.000"
+    timerdisplay.y = 0 ; timerdisplay.text = "0.000" ; timerdisplay.tint = 0x000000
     //
 
     // floor/wall
@@ -1117,6 +1165,14 @@ var loadlevel2 = ()=>{
         // timer
         timerdisplay.y = 0 ; timerdisplay.text = "0.000"
         //
+        // floor/wall
+        makeblock(0,670,10000,100,0x7C9082)
+        makeblock(0,-1000,50,2000,0x7C9082)
+        makeblock(4230,-1000,50,2000,0x7C9082)
+
+        // first blocks
+        iceblock(460,590,1400,80,0x89CFF0)
+
     }
 
     var loadlevel5 = ()=>{
