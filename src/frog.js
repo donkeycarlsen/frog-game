@@ -410,6 +410,24 @@ var textureover = (bx,by,bw=80,bh=80,bc=0xFFFFFF,bt)=>{
 
 }
 
+var layoutblock = (bx,by,bw=80,bh=80,bc=0x000000,pp=0)=>{
+    const bblock = new PIXI.Sprite(PIXI.Texture.WHITE)
+    bblock.x = bx
+    bblock.y = by
+    bblock.width = bw
+    bblock.height = bh
+    bblock.tint = bc
+    bblock.alpha = pp
+    terrain.addChild(bblock)
+
+    var b = new DKblock()
+    b.sprite = bblock
+
+    blox.push(b)
+
+}
+
+
 
 
 var invinciblepowerup = (bx,by,bw=40,bh=40,bc=0xFFFFFF)=>{
@@ -957,11 +975,11 @@ var loadlevel2 = ()=>{
     // first blocks
     spikeblock(460,650,140,20,0xF87575)
 
-    makeblock(600,570,210,100,0x000000)
+    layoutblock(600,570,210,100)
 
     spikeblock(950,590,20,70,0xF87575)
 
-    makeblock(810,470,200,200,0x104911)
+    layoutblock(810,470,280,200)
 
     textureover(600,470,490,200,0xFFFFFF,textures[1])
 
