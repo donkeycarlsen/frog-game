@@ -219,8 +219,12 @@ f.sprite = frog
 
 var textures = []
 const texture0 = PIXI.Texture.from('src/assets/texture0.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture0)
-const texture1 = PIXI.Texture.from('src/assets/block1-2.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture1)
-const texture2 = PIXI.Texture.from('src/assets/block2.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture2)
+const texture1 = PIXI.Texture.from('src/assets/block1-3.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture1)
+const texture2 = PIXI.Texture.from('src/assets/block2-3.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture2)
+const texture3 = PIXI.Texture.from('src/assets/block3.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture3)
+
+
+
 
 var music = []
 var musiclevel3 = new Audio('src/music/FROG_1_v2_a_mix_render.mp3')
@@ -441,14 +445,14 @@ var launchleftblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
 
 }
 
-var textureover = (bx,by,bw=80,bh=80,bc=0xFFFFFF,bt)=>{
+var textureover = (bx,by,bw=80,bh=80,bt,bc=0xFFFFFF)=>{
     const bblock = new PIXI.Sprite(PIXI.Texture.WHITE)
     bblock.x = bx
     bblock.y = by
     bblock.width = bw
     bblock.height = bh
-    bblock.tint = bc
     bblock.texture = bt
+    bblock.tint = bc
     terrain.addChild(bblock)
 
     var b = new DKblock()
@@ -459,14 +463,14 @@ var textureover = (bx,by,bw=80,bh=80,bc=0xFFFFFF,bt)=>{
 
 }
 
-var layoutblock = (bx,by,bw=80,bh=80,bc=0x000000,pp=0)=>{
+var layoutblock = (bx,by,bw=80,bh=80,pp=0,bc=0x000000)=>{
     const bblock = new PIXI.Sprite(PIXI.Texture.WHITE)
     bblock.x = bx
     bblock.y = by
     bblock.width = bw
     bblock.height = bh
-    bblock.tint = bc
     bblock.alpha = pp
+    bblock.tint = bc
     terrain.addChild(bblock)
 
     var b = new DKblock()
@@ -1066,7 +1070,7 @@ var loadlevel2 = ()=>{
 
     layoutblock(810,470,280,200)
 
-    textureover(600,470,490,200,0xFFFFFF,textures[1])
+    textureover(600,470,490,200,textures[1])
 
     spikeblock(1020,450,70,20,0xF87575)
     
@@ -1074,17 +1078,13 @@ var loadlevel2 = ()=>{
 
     spikeblock(1090,650,140,20,0xF87575)
 
-    makeblock(1230,500,70,170,0x104911)
-    makeblock(1230,500,350,70,0x104911)
-    makeblock(1510,500,70,170,0x104911)
+    layoutblock(1230,500,350,170)
 
     spikeblock(1370,480,140,20,0xF87575)
 
-    makeblock(1405,550,70,120,0xEDEEC0)
-    makeblock(1405,550,455,70,0xEDEEC0)
-    makeblock(1790,550,70,120,0xEDEEC0)
+    layoutblock(1405,550,455,120)
 
-    textureover(1230,500,630,170,0xFFFFFF,textures[2])
+    textureover(1230,500,630,170,textures[2])
 
     spikeblock(1680,620,70,20,0xF87575)
 
@@ -1092,17 +1092,13 @@ var loadlevel2 = ()=>{
 
     spikeblock(1860,650,140,20,0xF87575)
 
-    makeblock(2210+15,100,70,570,0x104911)
-    makeblock(2210+15,100,210,70,0x104911)
-    makeblock(2350+15,100,70,570,0x104911)
+    layoutblock(2210+15,100,210,570,0)
 
-    makeblock(2105,350,70,320,0xEDEEC0)
-    makeblock(2105,350,210,70,0xEDEEC0)
-    makeblock(2245,350,70,320,0xEDEEC0)
+    layoutblock(2105,350,210,320,0)
+  
+    layoutblock(2000,450,195,220,0)
 
-    makeblock(2000,450,70,220,0x104911)
-    makeblock(2000,450,195,70,0x104911)
-    makeblock(2125,450,70,220,0x104911)
+    textureover(2000,100,435,570,textures[3])
 
     launchleftblock(2210,170,15,50,0x8FADDC)
 
