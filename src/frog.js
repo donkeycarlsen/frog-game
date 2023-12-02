@@ -99,14 +99,13 @@ const level = new PIXI.Container(PIXI.Texture.WHITE)
    app.stage.addChild(level)
 
 
-// const baksd = new PIXI.Container(PIXI.Texture.WHITE)
-// const bg = PIXI.Texture.from('src/assets/bg.png')
-// const bgg = new PIXI.Sprite(bg)
-//     bgg.width = 1280
-//     bgg.height = 720
-//     bgg.x = 0
-//     bgg.y = 0
-//     level.addChild(bgg)
+
+var levelbackgrounds = [] 
+const level3bg = PIXI.Sprite.from('src/assets/level3bg.png')
+    level.addChild(level3bg)
+    levelbackgrounds.push(level3bg)
+
+var currentlevelbackground = level3bg
 
 class DKblock {
     sprite = null
@@ -170,7 +169,11 @@ const terrain = new PIXI.Container(PIXI.Texture.WHITE)
 
 const frogtexturesittingright = PIXI.Texture.from('src/assets/frogsittingright.png')
 const frogtexturesittingleft = PIXI.Texture.from('src/assets/frogsittingleft.png')
-var frogtextures = [frogtexturesittingright,frogtexturesittingleft]
+const frogtexturejumpingright = PIXI.Texture.from('src/assets/frogjumpingright.png')
+const frogtexturejumpingleft = PIXI.Texture.from('src/assets/frogjumpingleft.png')
+
+var frogtextures = [frogtexturesittingright,frogtexturesittingleft,frogtexturejumpingright,frogtexturejumpingleft]
+// var currentskin = frogtextures[0]
 
 const frog = new PIXI.Sprite(PIXI.Texture.WHITE)
 frog.tint = 0x009600
@@ -184,14 +187,18 @@ level.addChild(frog)
 var f = new DKplayer()
 f.sprite = frog
 
+// const frogskin = new PIXI.Sprite.from(currentskin)
+// frog.addChild(frogskin)
+
+
 
 var textures = []
 const texture0 = PIXI.Texture.from('src/assets/texture0.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture0)
-const texture1 = PIXI.Texture.from('src/assets/block1.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture1)
+const texture1 = PIXI.Texture.from('src/assets/block1-2.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture1)
 const texture2 = PIXI.Texture.from('src/assets/block2.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture2)
 
 var music = []
-var musiclevel3 = new Audio('src/music/FROG_1_v2_a_mix.mp3')
+var musiclevel3 = new Audio('src/music/FROG_1_v2_a_mix_render.mp3')
 musiclevel3.volume = 0.3
 musiclevel3.addEventListener('ended', function() {
     this.currentTime = 0;
@@ -618,10 +625,12 @@ app.ticker.add((delta) => {
    if (frogondascreeny < 100){level.y = -frog.y + 100}
    if (frogondascreeny > 470){level.y = -frog.y + 470}
 
-//    bgg.x = -level.x
-//    if (bgg.x > 400){level.x = -frog.x + 400}
-//    if (bgg.x < 150){level.x = -frog.x + 150}
- 
+//    currentlevelbackground.x = -level.x
+//    if (currentlevelbackground.x > 400){level.x = -frog.x + 400}
+//    if (currentlevelbackground.x < 300){level.x = -frog.x + 300}
+//    currentlevelbackground.y = -level.y
+//    if (currentlevelbackground.y > 470){level.y = -frog.y + 470}
+//    if (currentlevelbackground.y < 100){level.y = -frog.y + 100}
 
 
    level.x = Math.min(cameraleft,level.x)
@@ -629,8 +638,10 @@ app.ticker.add((delta) => {
    level.y = Math.min(cameratop,level.y)
    level.y = Math.max(camerabot,level.y)
 
-//    bgg.x = Math.min(cameraleft,-level.x)
-//    bgg.x = Math.max(cameraright,-level.x)
+//    currentlevelbackground.x = Math.min(cameraleft,-level.x)
+//    currentlevelbackground.x = Math.max(cameraright,-level.x)
+//    currentlevelbackground.y = Math.min(cameratop,-level.y)
+//    currentlevelbackground.y = Math.max(camerabot,-level.y)
 
    
     if (multiplayer && worldCode != 'offline')
@@ -1011,7 +1022,7 @@ var loadlevel2 = ()=>{
     // frog
     frog.x = spawnx ; frog.y = spawny ; speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0; frog.tint = 0xFFFFFF ; //var invinciblefrog.tintforlevel = 0xFFFFFF
     // camera
-    cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0
+    cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0 ; currentlevelbackground = levelbackgrounds[0]
     // timer
     timerdisplay.y = 0 ; timerdisplay.text = "0.000" ; timerdisplay.tint = 0x000000
     //
