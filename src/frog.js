@@ -229,6 +229,7 @@ const texture7 = PIXI.Texture.from('src/assets/block4-3.png',{wrapMode:PIXI.WRAP
 const texture8 = PIXI.Texture.from('src/assets/block4-4.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture8)
 const texture9 = PIXI.Texture.from('src/assets/block4-5.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture9)
 const texture10 = PIXI.Texture.from('src/assets/block4-6.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture10)
+const texture11 = PIXI.Texture.from('src/assets/block5.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture11)
 
 
 
@@ -1138,13 +1139,9 @@ var loadlevel2 = ()=>{
 
     // third height
 
-    makeblock(430,-200,280,20,0x104911)
-    makeblock(430,-200,20,70,0x104911)
-    makeblock(430,-150,210,20,0x104911)
-    makeblock(430+210,-200,20,70,0x104911)
-    makeblock(640,-270,70,20,0x104911)
-    makeblock(640,-270,20,70,0x104911)
-    makeblock(640+50,-270,20,70,0x104911)
+    layoutblock(430,-200,230,70,0)
+    layoutblock(640,-270,70,90,0)
+    textureover(430,-270,280,140,textures[11])
 
     
 
