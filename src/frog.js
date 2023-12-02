@@ -1168,11 +1168,11 @@ var loadlevel2 = ()=>{
     makeblock(1380+190,-330-70,20,140,0xEDEEC0)
 
 
-    var movp = new PKPath([[2200, -100], [2200, -300], [2400, -300], [2400, -100], [2200, -100]])
-    movp.percfunc = movp.easeInAndOutPosition(2)
-    makeblock(50,20,140,20,0x104911)
-    blox[blox.length - 1].baseMovementPath = movp
-    blox[blox.length - 1].baseMovementReverse = false
+    // var movp = new PKPath([[2200, -100], [2200, -300], [2400, -300], [2400, -100], [2200, -100]])
+    // movp.percfunc = movp.easeInAndOutPosition(2)
+    // makeblock(50,20,140,20,0x104911)
+    // blox[blox.length - 1].baseMovementPath = movp
+    // blox[blox.length - 1].baseMovementReverse = false
     
 
 
