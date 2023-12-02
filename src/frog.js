@@ -123,12 +123,27 @@ const level = new PIXI.Container(PIXI.Texture.WHITE)
    level.height = 500
    app.stage.addChild(level)
 
+const background = new PIXI.Container(PIXI.Texture.WHITE)
+background.x = 0
+background.y = 0
+background.zIndex = -1
+background.sortableChildren = true
+app.stage.addChild(background)
+app.stage.sortableChildren = true
 
 
 var levelbackgrounds = [] 
-const level3bg = PIXI.Sprite.from('src/assets/level3bg.png')
-    level.addChild(level3bg)
-    levelbackgrounds.push(level3bg)
+const level3bgtex = PIXI.Texture.from('src/assets/level3bg.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT})
+const level3bg = PIXI.TilingSprite.from(level3bgtex, 5000, 5000)
+console.log(level3bg.width)
+level3bg.width = 5000
+level3bg.height = 5000
+// level3bg.tileScale.set(2, 2)
+// Set the tilePosition to repeat the texture
+// level3bg.tilePosition.set(0, 0)
+level3bg.zIndex = -100
+background.addChild(level3bg)
+levelbackgrounds.push(level3bg)
 
 var currentlevelbackground = level3bg
 
@@ -662,18 +677,17 @@ app.ticker.add((delta) => {
    if (frogondascreeny < 100){level.y = -frog.y + 100}
    if (frogondascreeny > 470){level.y = -frog.y + 470}
 
-//    currentlevelbackground.x = -level.x
-//    if (currentlevelbackground.x > 400){level.x = -frog.x + 400}
-//    if (currentlevelbackground.x < 300){level.x = -frog.x + 300}
-//    currentlevelbackground.y = -level.y
-//    if (currentlevelbackground.y > 470){level.y = -frog.y + 470}
-//    if (currentlevelbackground.y < 100){level.y = -frog.y + 100}
-
-
    level.x = Math.min(cameraleft,level.x)
    level.x = Math.max(cameraright,level.x)
    level.y = Math.min(cameratop,level.y)
    level.y = Math.max(camerabot,level.y)
+
+   currentlevelbackground.x = level.x/10
+   //if (currentlevelbackground.x > 400){level.x = -frog.x + 400}
+   //if (currentlevelbackground.x < 300){level.x = -frog.x + 300}
+   currentlevelbackground.y = level.y/10
+   //if (currentlevelbackground.y > 470){level.y = -frog.y + 470}
+   //if (currentlevelbackground.y < 100){level.y = -frog.y + 100}
 
 //    currentlevelbackground.x = Math.min(cameraleft,-level.x)
 //    currentlevelbackground.x = Math.max(cameraright,-level.x)
