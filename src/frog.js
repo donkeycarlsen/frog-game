@@ -222,6 +222,13 @@ const texture0 = PIXI.Texture.from('src/assets/texture0.png',{wrapMode:PIXI.WRAP
 const texture1 = PIXI.Texture.from('src/assets/block1-3.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture1)
 const texture2 = PIXI.Texture.from('src/assets/block2-3.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture2)
 const texture3 = PIXI.Texture.from('src/assets/block3.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture3)
+const texture4 = PIXI.Texture.from('src/assets/block4.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture4)
+const texture5 = PIXI.Texture.from('src/assets/block4-1.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture5)
+const texture6 = PIXI.Texture.from('src/assets/block4-2.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture6)
+const texture7 = PIXI.Texture.from('src/assets/block4-3.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture7)
+const texture8 = PIXI.Texture.from('src/assets/block4-4.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture8)
+const texture9 = PIXI.Texture.from('src/assets/block4-5.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture9)
+const texture10 = PIXI.Texture.from('src/assets/block4-6.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture10)
 
 
 
@@ -1104,40 +1111,27 @@ var loadlevel2 = ()=>{
 
     // fourth blocks
 
-    makeblock(1600,230,140,20,0x104911)
-    makeblock(1600,230,20,70,0x104911)
-    makeblock(1600,280,140,20,0x104911)
-    makeblock(1720,230,20,70,0x104911)
+    layoutblock(1600,230,140,70)
+    textureover(1600,230,140,70,textures[4])
 
-    makeblock(1330,200,140,20,0xEDEEC0)
-    makeblock(1330,200,20,70,0xEDEEC0)
-    makeblock(1330,200+50,140,20,0xEDEEC0)
-    makeblock(1330+120,200,20,70,0xEDEEC0)
+    layoutblock(1330,200,140,70)
+    textureover(1330,200,140,70,textures[8])
 
-    makeblock(1060,215,140,20,0x104911)
-    makeblock(1060,215,20,70,0x104911)
-    makeblock(1060,215+50,140,20,0x104911)
-    makeblock(1060+120,215,20,70,0x104911)
+    layoutblock(1060,215,140,70)
+    textureover(1060,215,140,70,textures[5])
     
-    makeblock(825,115,140,20,0xEDEEC0)
-    makeblock(825,115,20,70,0xEDEEC0)
-    makeblock(825,115+50,140,20,0xEDEEC0)
-    makeblock(825+120,115,20,70,0xEDEEC0)
+    layoutblock(825,115,140,70)
+    textureover(825,115,140,70,textures[9])
 
-    makeblock(530,80,140,20,0x104911)
-    makeblock(530,80,20,70,0x104911)
-    makeblock(530,80+50,140,20,0x104911)
-    makeblock(530+120,80,20,70,0x104911)
 
-    makeblock(290,110,140,20,0xEDEEC0)
-    makeblock(290,110,20,70,0xEDEEC0)
-    makeblock(290,110+50,140,20,0xEDEEC0)
-    makeblock(290+120,110,20,70,0xEDEEC0)
+    layoutblock(530,80,140,70)
+    textureover(530,80,140,70,textures[6])
 
-    makeblock(50,20,140,20,0x104911)
-    makeblock(50,20,20,70,0x104911)
-    makeblock(50,20+50,140,20,0x104911)
-    makeblock(50+120,20,20,70,0x104911)
+    layoutblock(290,110,140,70)
+    textureover(290,110,140,70,textures[10])
+
+    layoutblock(50,20,140,70)
+    textureover(50,20,140,70,textures[7])
 
     bounceblock(50,5,50,15,0x8FADDC)
     launchrightblock(50,-275,15,50,0x8FADDC)
