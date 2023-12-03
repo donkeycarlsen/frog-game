@@ -133,7 +133,7 @@ app.stage.sortableChildren = true
 
 
 var levelbackgrounds = [] 
-const level3bgtex = PIXI.Texture.from('src/assets/level3bg.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT})
+const level3bgtex = PIXI.Texture.from('src/assets/level3bg2.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT})
 const level3bg = PIXI.TilingSprite.from(level3bgtex, 5000, 5000)
 console.log(level3bg.width)
 level3bg.width = 5000
@@ -564,7 +564,7 @@ window.addEventListener("keydown", function(e) {
     // if (e.key == "2"){unloadlevel()}
     // if (e.key == "1"){loadlevel1()}
     if (e.key == "r"){reloadlevel()}
-    // if (e.key == "m"){makeblock(frog.x,frog.y+frog.height,frog.width,frog.height)}
+    if (e.key == "m"){makeblock(frog.x,frog.y+frog.height,frog.width,frog.height)}
 
 })
 // if(movingUp == false){timejumped = Date.now()}
@@ -682,10 +682,10 @@ app.ticker.add((delta) => {
    level.y = Math.min(cameratop,level.y)
    level.y = Math.max(camerabot,level.y)
 
-   currentlevelbackground.x = level.x/10
+   currentlevelbackground.x = level.x/8
    //if (currentlevelbackground.x > 400){level.x = -frog.x + 400}
    //if (currentlevelbackground.x < 300){level.x = -frog.x + 300}
-   currentlevelbackground.y = level.y/10
+   currentlevelbackground.y = level.y/8 - 720
    //if (currentlevelbackground.y > 470){level.y = -frog.y + 470}
    //if (currentlevelbackground.y < 100){level.y = -frog.y + 100}
 
@@ -1084,7 +1084,7 @@ var loadlevel2 = ()=>{
     makeblock(4230,-1000,50,2000,0x7C9082)
 
     // first blocks
-    spikeblock(460,650,140,20,0xF87575)
+    spikeblock(500,650,100,20,0xF87575)
 
     layoutblock(600,570,210,100)
 
@@ -1171,7 +1171,7 @@ var loadlevel2 = ()=>{
     spikeblock(900+280-50,-330-20+90,50,20,0xF87575)
     
 
-    makeblock(1380+190-40,-330-70+120-40,220,20,0x104911)
+    makeblock(1380+190-40,-320,220,20,0x104911)
     makeblock(1380+190-40,-330-70+120-40,20,100,0x104911)
     makeblock(1380+190-40+20,-330-70+120-40+80,220-40,20,0x104911)
     makeblock(1380+190-40+200,-330-70+120-40,20,100,0x104911)
@@ -1180,6 +1180,9 @@ var loadlevel2 = ()=>{
     makeblock(1380+20,-330-70+120,210-20,20,0xEDEEC0)
     makeblock(1380,-330-70,20,140,0xEDEEC0)
     makeblock(1380+190,-330-70,20,140,0xEDEEC0)
+
+    // layoutblock()
+
 
 
     // var movp = new PKPath([[2200, -100], [2200, -300], [2400, -300], [2400, -100], [2200, -100]])
