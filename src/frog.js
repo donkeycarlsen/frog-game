@@ -135,7 +135,6 @@ app.stage.sortableChildren = true
 var levelbackgrounds = [] 
 const level3bgtex = PIXI.Texture.from('src/assets/level3bg2.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT})
 const level3bg = PIXI.TilingSprite.from(level3bgtex, 5000, 5000)
-console.log(level3bg.width)
 level3bg.width = 5000
 level3bg.height = 5000
 // level3bg.tileScale.set(2, 2)
@@ -161,6 +160,9 @@ class DKblock {
     launchleft = false
     swim = false
     ice = 0
+    orb = false
+    orbjumpsused = 0
+    checkpoint = false
 
     baseMovementPath = null
     baseMovementDuration = 5.0
@@ -182,9 +184,15 @@ class DKpowerup {
 }
 
 class DKplayer {
+    width = 50
+    height = 50
+    x = 0
+    y = 0
     sprite = null
     invincible = false
     off = false
+
+    checkpoint = 0
 
     standingOn = null
     standingOnPosition = [0,0]
@@ -207,24 +215,29 @@ const terrain = new PIXI.Container(PIXI.Texture.WHITE)
 // PIXI.Sprite(PIXI.Texture.WHITE)
 // PIXI.Sprite.from('src/assets/frog.png');
 
-const frogtexturesittingright = PIXI.Texture.from('src/assets/frogsittingright.png')
-const frogtexturesittingleft = PIXI.Texture.from('src/assets/frogsittingleft.png')
-const frogtexturejumpingright = PIXI.Texture.from('src/assets/frogjumpingright.png')
-const frogtexturejumpingleft = PIXI.Texture.from('src/assets/frogjumpingleft.png')
+const frogtexturesitting = PIXI.Texture.from('src/assets/frogsitting.png')
+const frogtexturejump1 = PIXI.Texture.from('src/assets/frogjump1.png')
+const frogtexturejump2 = PIXI.Texture.from('src/assets/frogjump2.png')
+const frogtexturejump3 = PIXI.Texture.from('src/assets/frogjump3.png')
 
-var frogtextures = [frogtexturesittingright,frogtexturesittingleft,frogtexturejumpingright,frogtexturejumpingleft]
+var frogtextures = [frogtexturesitting,frogtexturejump1,frogtexturejump2,frogtexturejump3]
 // var currentskin = frogtextures[0]
+
+var f = new DKplayer()
+
 
 const frog = new PIXI.Sprite(PIXI.Texture.WHITE)
 frog.tint = 0x009600
-frog.width = 50
-frog.height = 50
-frog.x = -2000     // 50
-frog.y = 1000    // 670
+f.width = 50
+f.height = 50
+f.x = -2000     // 50
+f.y = 1000    // 670
+// frog.width = 50
+// frog.height = 50
+frog.anchor.set(0.5)
 frog.texture = frogtextures[0]
 level.addChild(frog)
 
-var f = new DKplayer()
 f.sprite = frog
 
 // const frogskin = new PIXI.Sprite.from(currentskin)
@@ -468,6 +481,49 @@ var launchleftblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
 
 }
 
+var orbblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF)=>{
+    const bblock = new PIXI.Sprite(PIXI.Texture.WHITE)
+    bblock.x = bx
+    bblock.y = by
+    bblock.width = bw
+    bblock.height = bh
+    bblock.tint = bc
+    terrain.addChild(bblock)
+
+    var b = new DKblock()
+    b.sprite = bblock
+    b.touchable = false
+    b.orb = true
+
+    blox.push(b)
+
+}
+
+var cpspawnx = 0
+var cpspawny = 0
+
+var checkpointblock = (bx,by,bw=80,bh=80,ba=0,cpx,cpy,cpv)=>{
+    const bblock = new PIXI.Sprite(PIXI.Texture.WHITE)
+    bblock.x = bx
+    bblock.y = by
+    bblock.width = bw
+    bblock.height = bh
+    bblock.tint = 0x000000
+    bblock.alpha = ba
+    terrain.addChild(bblock)
+
+
+    var b = new DKblock()
+    b.sprite = bblock
+    b.touchable = false
+    b.checkpoint = true
+    b.cpx = cpx
+    b.cpy = cpy
+    b.cpv = cpv
+
+    blox.push(b)
+}
+
 var textureover = (bx,by,bw=80,bh=80,bt,bc=0xFFFFFF)=>{
     const bblock = new PIXI.Sprite(PIXI.Texture.WHITE)
     bblock.x = bx
@@ -564,7 +620,7 @@ window.addEventListener("keydown", function(e) {
     // if (e.key == "2"){unloadlevel()}
     // if (e.key == "1"){loadlevel1()}
     if (e.key == "r"){reloadlevel()}
-    if (e.key == "]"){makeblock(frog.x,frog.y+frog.height,frog.width,frog.height)}
+    if (e.key == "]"){makeblock(f.x,f.y+f.height,f.width,f.height)}
 
 })
 // if(movingUp == false){timejumped = Date.now()}
@@ -603,7 +659,7 @@ app.ticker.add((delta) => {
     timeSinceLastUpdateServer += delta
     if (timeSinceLastUpdateServer > serverUpdateDelay && multiplayer && worldCode != 'offline') {
         timeSinceLastUpdateServer = 0
-        connection.sendPosition(worldCode, frog.x, frog.y, 0, 0)
+        connection.sendPosition(worldCode, f.x, f.y, 0, 0)
     }
 })
 
@@ -618,10 +674,10 @@ var finishy = 0
 app.ticker.add((delta) => {
 
     /// timer 
-    if ((frog.x != spawnx) || (frog.y != spawny)){started = true}
+    if ((f.x != spawnx) || (f.y != spawny)){started = true}
     if ((started == true) && (finished == false)){timerdisplay.text=((Date.now()-timer)/1000)}
     else{timer = Date.now()}
-    if ((frog.x > finishx) && (frog.y < finishy) && (!finished)){finished = true ;
+    if ((f.x > finishx) && (f.y < finishy) && (!finished)){finished = true ;
         connection.sendTime(worldCode,parseFloat(timerdisplay.text))}
 
 
@@ -634,18 +690,20 @@ app.ticker.add((delta) => {
         else if (movingRight) {
             accelX = -5 * iceJJFish
         }
-        if (movingRight == movingLeft) {accelX = 0 ; frog.texture = frogtextures[0] ; speedX *= 0.95}
+        if (movingRight == movingLeft) {accelX = 0 ; speedX *= 0.95}
     }
     else {
-        if (movingRight){speedX = -50 ; frog.texture = frogtextures[0]}
-        if (movingLeft){speedX = 50 ; frog.texture = frogtextures[1]}
         if (movingRight == movingLeft){speedX = 0}
+        else {if (movingRight){speedX = -50 ; frog.scale.x = 1}
+        if (movingLeft){speedX = 50 ; frog.scale.x = -1}}
     }
 
+
+
     
-    frog.x -= (speedX * delta * 0.2) - (excessSpeedXright * delta * 0.2) - (excessSpeedXleft * delta * 0.2)
+    f.x -= (speedX * delta * 0.2) - (excessSpeedXright * delta * 0.2) - (excessSpeedXleft * delta * 0.2)
     speedX += accelX * delta * 0.2
-    frog.y -= speedY * delta * 0.2
+    f.y -= speedY * delta * 0.2
     speedY += accelY * delta * 0.2
 
     excessSpeedXright += excessAccelXright * delta * 0.2
@@ -659,8 +717,8 @@ app.ticker.add((delta) => {
     });
     if (f.standingOn != null) {
         var motion = [f.standingOn.sprite.x - f.standingOnPosition[0], f.standingOn.sprite.y - f.standingOnPosition[1]]
-        frog.x += motion[0]
-        frog.y += motion[1]
+        f.x += motion[0]
+        f.y += motion[1]
         f.standingOnPosition = [f.standingOn.sprite.x, f.standingOn.sprite.y]
     }
     networkElements.children.forEach(p => {
@@ -670,12 +728,12 @@ app.ticker.add((delta) => {
    
    //update camera
 
-   var frogondascreenx = frog.x + level.x
-   if (frogondascreenx > 400){level.x = -frog.x + 400}
-   if (frogondascreenx < 300){level.x = -frog.x + 300}
-   var frogondascreeny = frog.y + level.y
-   if (frogondascreeny < 100){level.y = -frog.y + 100}
-   if (frogondascreeny > 470){level.y = -frog.y + 470}
+   var frogondascreenx = f.x + level.x
+   if (frogondascreenx > 400){level.x = -f.x + 400}
+   if (frogondascreenx < 300){level.x = -f.x + 300}
+   var frogondascreeny = f.y + level.y
+   if (frogondascreeny < 100){level.y = -f.y + 100}
+   if (frogondascreeny > 470){level.y = -f.y + 470}
 
    level.x = Math.min(cameraleft,level.x)
    level.x = Math.max(cameraright,level.x)
@@ -683,11 +741,11 @@ app.ticker.add((delta) => {
    level.y = Math.max(camerabot,level.y)
 
    currentlevelbackground.x = level.x/8
-   //if (currentlevelbackground.x > 400){level.x = -frog.x + 400}
-   //if (currentlevelbackground.x < 300){level.x = -frog.x + 300}
+   //if (currentlevelbackground.x > 400){level.x = -f.x + 400}
+   //if (currentlevelbackground.x < 300){level.x = -f.x + 300}
    currentlevelbackground.y = level.y/8 - 720
-   //if (currentlevelbackground.y > 470){level.y = -frog.y + 470}
-   //if (currentlevelbackground.y < 100){level.y = -frog.y + 100}
+   //if (currentlevelbackground.y > 470){level.y = -f.y + 470}
+   //if (currentlevelbackground.y < 100){level.y = -f.y + 100}
 
 //    currentlevelbackground.x = Math.min(cameraleft,-level.x)
 //    currentlevelbackground.x = Math.max(cameraright,-level.x)
@@ -697,6 +755,18 @@ app.ticker.add((delta) => {
    
     if (multiplayer && worldCode != 'offline')
         connection.renderFrogs()
+    
+    // jump animation
+    if (f.standingOn == null){
+        if (speedY > 10){frog.texture = frogtextures[1]}
+        else if (speedY < -10){frog.texture = frogtextures[3]}
+        else {frog.texture = frogtextures[2]}
+
+    }
+    else (frog.texture = frogtextures[0])
+    frog.x = f.x + f.width/2
+    frog.y = f.y + f.height/2
+
 })
 
 var jumpy = ()=>{
@@ -713,10 +783,10 @@ var jumpy = ()=>{
 var wis = (block)=>{
     var s = block.sprite
 
-    var blockright = Math.abs(frog.x - s.x - s.width)
-    var blockleft = Math.abs(frog.x + frog.width - s.x)
-    var blockbottom = Math.abs(frog.y - s.y - s.height)
-    var blocktop = Math.abs(frog.y + frog.width - s.y)
+    var blockright = Math.abs(f.x - s.x - s.width)
+    var blockleft = Math.abs(f.x + f.width - s.x)
+    var blockbottom = Math.abs(f.y - s.y - s.height)
+    var blocktop = Math.abs(f.y + f.width - s.y)
     var sidez = [blockright, blockleft, blockbottom, blocktop]
     
     var mincollision = 0
@@ -725,16 +795,17 @@ var wis = (block)=>{
     if (blocktop < sidez[mincollision]){mincollision = 3}
 
     
-    if (frog.x < s.x + s.width &&
-        frog.x + frog.width > s.x &&
-        frog.y < s.y + s.height &&
-        frog.y + frog.width > s.y)
+    if (f.x < s.x + s.width &&
+        f.x + f.width > s.x &&
+        f.y < s.y + s.height &&
+        f.y + f.width > s.y)
         
         {
             block.onCollision()
             if (block.invincible){frog.tint = 0xFF0000 ; f.invincible = true}
-            if (block.off){frog.tint = 0x009600 ; f = new DKplayer()}
-            if (block.ouchie && !f.invincible){reloadlevel()}
+            if (block.off){frog.tint = 0xFFFFFF}
+            if (block.ouchie && !f.invincible){if(f.checkpoint == 0){reloadlevel()} else{f.x = cpx ; f.y = cpy 
+                speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0 ; frog.tint = 0xFFFFFF}}
             if (block.collectible){s.y = 800}
             if (block.door != null){block.door.sprite.y = 800}
             if (block.bounce){speedY = 100}
@@ -742,6 +813,8 @@ var wis = (block)=>{
             if (block.gravitydown){accelY = -20 ; speedY = -45}
             if (block.launchright){excessSpeedXleft = 0 ; excessSpeedXright = 150 ; speedY = 50}
             if (block.launchleft){excessSpeedXright = 0 ; excessSpeedXleft = -150 ; speedY = 50}
+            if (block.orb){if (canjumpy && movingUp && block.orbjumpsused < 1){jumpy() ; canjumpy = false ; block.orbjumpsused += 1}}
+            if (block.checkpoint){if(f.checkpoint < block.cpv){f.checkpoint = block.cpv ; cpx = block.cpx ; cpy = block.cpy}}
             // if (block.swim){
             //     swimming = true;
             //     if (movingUp){accelY = 10 ; if (speedY > 20){accelY = -5}}
@@ -752,11 +825,11 @@ var wis = (block)=>{
             // }
             if (block.touchable){
                 if (accelY < 0){
-                    if (mincollision == 0){frog.x = s.x + s.width  ; excessSpeedXright = 0 ; excessSpeedXleft = 0}
-                    if (mincollision == 1){frog.x = s.x - frog.width  ; excessSpeedXright = 0 ; excessSpeedXleft = 0}
-                    if (mincollision == 2){frog.y = s.y + s.height ; if (speedY > 0){speedY = -(0.5 * speedY)}}
+                    if (mincollision == 0){f.x = s.x + s.width  ; excessSpeedXright = 0 ; excessSpeedXleft = 0}
+                    if (mincollision == 1){f.x = s.x - f.width  ; excessSpeedXright = 0 ; excessSpeedXleft = 0}
+                    if (mincollision == 2){f.y = s.y + s.height ; if (speedY > 0){speedY = -(0.5 * speedY)}}
                     if (mincollision == 3){
-                        frog.y = s.y - frog.height ; 
+                        f.y = s.y - f.height ; 
                         if (speedY < 0){speedY = 0} ; 
                         if (speedY == 0 && movingUp){jumpy()} 
                         f.standingOnPosition = [s.x, s.y] 
@@ -764,20 +837,20 @@ var wis = (block)=>{
                     }
                 }
                 else {
-                    if (mincollision == 0){frog.x = s.x + s.width}
-                    if (mincollision == 1){frog.x = s.x - frog.width}
+                    if (mincollision == 0){f.x = s.x + s.width}
+                    if (mincollision == 1){f.x = s.x - f.width}
                     if (mincollision == 2){
-                        frog.y = s.y + s.height; 
+                        f.y = s.y + s.height; 
                         if (speedY > 0){speedY = 0}; 
                         if (speedY == 0 && movingUp){jumpy()}; 
                         f.standingOnPosition = [s.x, s.y] 
                         f.standingOn = block; 
                     }     
-                    if (mincollision == 3){frog.y = s.y - frog.height ; if (speedY < 0){speedY = -(0.5 * speedY)}}
+                    if (mincollision == 3){f.y = s.y - f.height ; if (speedY < 0){speedY = -(0.5 * speedY)}}
                 }
             }
         } else {
-            if (f.standingOn == block && Math.abs(frog.y - (s.y - frog.height)) > 0.2) {
+            if (f.standingOn == block && Math.abs(f.y - (s.y - f.height)) > 0.2) {
                 f.standingOn = null
                 // ice
                 if (block.ice > 0) {
@@ -788,6 +861,7 @@ var wis = (block)=>{
                     }
                 }
             }
+            block.orbjumpsused = 0
         }
 
         if (block.baseMovementPath != null) {
@@ -806,10 +880,10 @@ var wis = (block)=>{
 var handlePlayerCollision = (p)=>{
     var s = p
 
-    var blockright = Math.abs(frog.x - s.x - s.width)
-    var blockleft = Math.abs(frog.x + frog.width - s.x)
-    var blockbottom = Math.abs(frog.y - s.y - s.height)
-    var blocktop = Math.abs(frog.y + frog.width - s.y)
+    var blockright = Math.abs(f.x - s.x - s.width)
+    var blockleft = Math.abs(f.x + f.width - s.x)
+    var blockbottom = Math.abs(f.y - s.y - s.height)
+    var blocktop = Math.abs(f.y + f.width - s.y)
     var sidez = [blockright, blockleft, blockbottom, blocktop]
     
     var mincollision = 0
@@ -818,24 +892,24 @@ var handlePlayerCollision = (p)=>{
     if (blocktop < sidez[mincollision]){mincollision = 3}
 
     
-    if (frog.x < s.x + s.width &&
-        frog.x + frog.width > s.x &&
-        frog.y < s.y + s.height &&
-        frog.y + frog.width > s.y)
+    if (f.x < s.x + s.width &&
+        f.x + f.width > s.x &&
+        f.y < s.y + s.height &&
+        f.y + f.width > s.y)
         {
             //p.onCollision()
             if (true) { //p.touchable
                 if (accelY < 0){
-                    if (mincollision == 0){frog.x = s.x + s.width}
-                    if (mincollision == 1){frog.x = s.x - frog.width}
-                    if (mincollision == 2){frog.y = s.y + s.height ; if (speedY > 0){speedY = -(0.5 * speedY)}}
-                    if (mincollision == 3){frog.y = s.y - frog.height ; if (speedY < 0){speedY = 0} ; if (speedY == 0 && movingUp){jumpy()}; frog.standingOn = s;}
+                    if (mincollision == 0){f.x = s.x + s.width}
+                    if (mincollision == 1){f.x = s.x - f.width}
+                    if (mincollision == 2){f.y = s.y + s.height ; if (speedY > 0){speedY = -(0.5 * speedY)}}
+                    if (mincollision == 3){f.y = s.y - f.height ; if (speedY < 0){speedY = 0} ; if (speedY == 0 && movingUp){jumpy()}; frog.standingOn = s;}
                 }
                 else {
-                    if (mincollision == 0){frog.x = s.x + s.width}
-                    if (mincollision == 1){frog.x = s.x - frog.width}
-                    if (mincollision == 2){frog.y = s.y + s.height ; if (speedY > 0){speedY = 0} ; if (speedY == 0 && movingUp){jumpy()}; frog.standingOn = s;}     
-                    if (mincollision == 3){frog.y = s.y - frog.height ; if (speedY < 0){speedY = -(0.5 * speedY)}}
+                    if (mincollision == 0){f.x = s.x + s.width}
+                    if (mincollision == 1){f.x = s.x - f.width}
+                    if (mincollision == 2){f.y = s.y + s.height ; if (speedY > 0){speedY = 0} ; if (speedY == 0 && movingUp){jumpy()}; frog.standingOn = s;}     
+                    if (mincollision == 3){f.y = s.y - f.height ; if (speedY < 0){speedY = -(0.5 * speedY)}}
                 }
             }
         }
@@ -847,7 +921,7 @@ var loadlevel1 = ()=>{
     // spawn / finish
     spawnx = 50 ; spawny = 620 ; finishx = 4070 ; finishy = 670 ; started = false ; finished = false
     // frog
-    frog.x = spawnx ; frog.y = spawny ; speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0; frog.tint = 0x009600 ; //var invinciblefrog.tintforlevel = 0xFFFFFF
+    f.x = spawnx ; f.y = spawny ; speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0; frog.tint = 0x009600 ; //var invinciblefrog.tintforlevel = 0xFFFFFF
     // camera
     cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0
     // timer
@@ -943,7 +1017,7 @@ var loadlevel2 = ()=>{
     // spawn / finish
     spawnx = 50 ; spawny = 620 ; finishx = 4070 ; finishy = 670 ; started = false ; finished = false
     // frog
-    frog.x = spawnx ; frog.y = spawny ; speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0; frog.tint = 0x009600 ; //var invinciblefrog.tintforlevel = 0xFFFFFF
+    f.x = spawnx ; f.y = spawny ; speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0; frog.tint = 0x009600 ; //var invinciblefrog.tintforlevel = 0xFFFFFF
     // camera
     cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0
     // timer
@@ -1071,7 +1145,7 @@ var loadlevel2 = ()=>{
     // spawn / finish
     spawnx = 50 ; spawny = 620 ; finishx = 4070 ; finishy = 670 ; started = false ; finished = false
     // frog
-    frog.x = spawnx ; frog.y = spawny ; speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0; frog.tint = 0xFFFFFF ; //var invinciblefrog.tintforlevel = 0xFFFFFF
+    f.x = spawnx ; f.y = spawny ; speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0; frog.tint = 0xFFFFFF ; //var invinciblefrog.tintforlevel = 0xFFFFFF
     // camera
     cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0 ; currentlevelbackground = levelbackgrounds[0]
     // timer
@@ -1181,6 +1255,11 @@ var loadlevel2 = ()=>{
     makeblock(1380,-330-70,20,140,0xEDEEC0)
     makeblock(1380+190,-330-70,20,140,0xEDEEC0)
 
+    orbblock(2030,-360,50,50,0xFFFF00)
+    checkpointblock(2345,-600,210,400,1,2425,-250,1)
+
+    layoutblock(2345,-200,210,870,1,0xFFFFFF)
+
     // layoutblock()
 
 
@@ -1200,7 +1279,7 @@ var loadlevel2 = ()=>{
         // spawn / finish
         spawnx = 50 ; spawny = 620 ; finishx = 4070 ; finishy = 670 ; started = false ; finished = false
         // frog
-        frog.x = spawnx ; frog.y = spawny ; speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0; frog.tint = 0xFFFFFF ; //var invinciblefrog.tintforlevel = 0xFFFFFF
+        f.x = spawnx ; f.y = spawny ; speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0; frog.tint = 0xFFFFFF ; //var invinciblefrog.tintforlevel = 0xFFFFFF
         // camera
         cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0
         // timer
@@ -1221,7 +1300,7 @@ var loadlevel2 = ()=>{
         // spawn / finish
         spawnx = 50 ; spawny = 620 ; finishx = 4070 ; finishy = 670 ; started = false ; finished = false
         // frog
-        frog.x = spawnx ; frog.y = spawny ; speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0; frog.tint = 0xFFFFFF ; //var invinciblefrog.tintforlevel = 0xFFFFFF
+        f.x = spawnx ; f.y = spawny ; speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0; frog.tint = 0xFFFFFF ; //var invinciblefrog.tintforlevel = 0xFFFFFF
         // camera
         cameraleft = 0 ; cameraright = -3000 ; cameratop = 720 ; camerabot = 0
         // timer
@@ -1236,13 +1315,14 @@ blox = []
 }
 
 var reloadlevel = ()=>{
+    f = new DKplayer()
     unloadlevel()
     if (menu.levelbuttons[0].y == 4000){loadlevel1()}
     if (menu.levelbuttons[1].y == 4000){loadlevel2()}
     if (menu.levelbuttons[2].y == 4000){loadlevel3()}
     if (menu.levelbuttons[3].y == 4000){loadlevel4()}
     if (menu.levelbuttons[4].y == 4000){loadlevel5()}
-    f = new DKplayer()
+
 }
 
 console.log("booty butt cheeks!")
