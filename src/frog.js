@@ -1188,7 +1188,7 @@ var loadlevel2 = ()=>{
 
     spikeblock(1860,650,140,20,0xF87575)
 
-    layoutblock(2210+15,100,210,570,0)
+    layoutblock(2225,100,210,570,0)
 
     layoutblock(2105,350,210,320,0)
   
@@ -1197,6 +1197,8 @@ var loadlevel2 = ()=>{
     textureover(2000,100,435,570,textures[3])
 
     launchleftblock(2210,170,15,50,0x8FADDC)
+
+    spikeblock(2275,80,70,20,0xF87575)
 
     // fourth blocks
 
@@ -1209,8 +1211,9 @@ var loadlevel2 = ()=>{
     layoutblock(1060,215,140,70)
     textureover(1060,215,140,70,textures[5])
     
-    layoutblock(825,115,140,70)
-    textureover(825,115,140,70,textures[9])
+    orbblock(870,115,50,50,0xFFFF00)
+    // layoutblock(825,115,140,70,0.2)
+    // textureover(825,115,140,70,textures[9])
 
 
     layoutblock(530,80,140,70)
@@ -1259,6 +1262,12 @@ var loadlevel2 = ()=>{
     checkpointblock(2345,-600,210,400,1,2425,-250,1)
 
     layoutblock(2345,-200,210,870,1,0xFFFFFF)
+    layoutblock(2465,0,210,670,1,0xFFFFFF)
+    layoutblock(2585,200,210,470,1,0x00FFFF)
+    layoutblock(2705,400,420,270,1,0xFFFF00)
+    layoutblock(2945,200,210,470,1,0xFF00FF)
+    layoutblock(2705,400,330,270,1,0xFFFF00)
+    layoutblock(2705,-600,210,500,1,0xFFFFFF)
 
     // layoutblock()
 
