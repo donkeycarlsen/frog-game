@@ -1386,7 +1386,6 @@ var reloadlevel = ()=>{
     f = new DKplayer()
     unloadlevel()
     levelloader()
-
 }
 
 console.log("booty butt cheeks!")
