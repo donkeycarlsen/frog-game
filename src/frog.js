@@ -1,7 +1,7 @@
 const app = new PIXI.Application({
     width: 1280, height: 720, backgroundColor: 0xA7A284, resolution: 1
 })
-document.body.appendChild(app.view)
+document.querySelector('.game-container').appendChild(app.view)
 
 var inputElement = document.getElementById("usernameInput");
 
@@ -41,34 +41,34 @@ menu.buttons[0].on('click', (event) => {
         menu.buttons[1].y = 3000 ; menu.buttons[2].y = 3000 ; menu.buttons[3].y = 3000
         menu.loadsingleplayermenu()
             menu.levelbuttons[0].on('click', (event) =>{
-                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 4000 ; menu.levelbuttons[1].y = 3000 ;
-                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
+                menu.unloadMenu()
                 worldCode = 'level1'
                 loadlevel1()
             })
             menu.levelbuttons[1].on('click', (event) =>{
-                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 4000 ;
-                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
+                menu.unloadMenu()
                 worldCode = 'level2'
                 loadlevel2()
             })
             menu.levelbuttons[2].on('click', (event) =>{
-                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
-                menu.levelbuttons[2].y = 4000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
+                menu.unloadMenu()
                 worldCode = 'level3'
                 loadlevel3() ; music[0].play()
             })
             menu.levelbuttons[3].on('click', (event) =>{
-                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
-                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 4000 ; menu.levelbuttons[4].y = 3000
+                menu.unloadMenu()
                 worldCode = 'level4'
                 loadlevel4()
             })
             menu.levelbuttons[4].on('click', (event) =>{
-                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
-                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 4000
+                menu.unloadMenu()
                 worldCode = 'level5'
                 loadlevel5()
+            })
+            menu.levelbuttons[5].on('click', (event) =>{
+                menu.unloadMenu()
+                worldCode = 'levelpond'
+                loadleveldapond()
             })
 
     });
@@ -79,32 +79,27 @@ menu.buttons[0].on('click', (event) => {
         menu.buttons[1].y = 3000 ; menu.buttons[2].y = 3000 ; menu.buttons[3].y = 3000
         menu.loadmultiplayermenu()
             menu.levelbuttons[0].on('click', (event) =>{
-                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 4000 ; menu.levelbuttons[1].y = 3000 ;
-                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
+                menu.unloadMenu()
                 worldCode = 'level1online'
                 loadlevel1()
             })
             menu.levelbuttons[1].on('click', (event) =>{
-                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 4000 ;
-                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
+                menu.unloadMenu()
                 worldCode = 'level2online'
                 loadlevel2()
             })
             menu.levelbuttons[2].on('click', (event) =>{
-                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
-                menu.levelbuttons[2].y = 4000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 3000
+                menu.unloadMenu()
                 worldCode = 'level3online'
                 loadlevel3() ; music[0].play()
             })
             menu.levelbuttons[3].on('click', (event) =>{
-                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
-                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 4000 ; menu.levelbuttons[4].y = 3000
+                menu.unloadMenu()
                 worldCode = 'level4online'
                 loadlevel4()
             })
             menu.levelbuttons[4].on('click', (event) =>{
-                menu.backgrounds[0].y = 3000 ; menu.levelbuttons[0].y = 3000 ; menu.levelbuttons[1].y = 3000 ;
-                menu.levelbuttons[2].y = 3000 ; menu.levelbuttons[3].y = 3000 ; menu.levelbuttons[4].y = 4000
+                menu.unloadMenu()
                 worldCode = 'level5online'
                 loadlevel5()
             })
@@ -121,6 +116,7 @@ const level = new PIXI.Container(PIXI.Texture.WHITE)
    level.y = 0
    level.width = 500
    level.height = 500
+   level.sortableChildren = true
    app.stage.addChild(level)
 
 const background = new PIXI.Container(PIXI.Texture.WHITE)
@@ -167,9 +163,22 @@ class DKblock {
     baseMovementPath = null
     baseMovementDuration = 5.0
     baseMovementReverse = true
+    alwaysMove = true
+    movementStartTime = -1
+    moveOnCollision = false
+
+    launch = [0,0]
 
     constructor(){}
-    onCollision = ()=>{}
+    onCollision = ()=>{
+        if (this.moveOnCollision && Date.now() - this.movementStartTime > this.baseMovementDuration*1000) {
+            this.movementStartTime = Date.now()
+        }
+        this.onCollisionExtra(this)
+    }
+    onCollisionExtra = (block) => {
+
+    }
 
 }
 
@@ -321,6 +330,21 @@ var makeblock = (bx,by,bw=80,bh=80,bc=0xFFFFFF,bi=textures[0])=>{
     block.tint = bc
     block.texture = bi
     terrain.addChild(block)
+    
+    var b = new DKblock()
+    b.sprite = block
+    blox.push(b)
+    return b
+}
+var makeblockDontAdd = (bx,by,bw=80,bh=80,bc=0xFFFFFF,bi=textures[0])=>{
+    const block = new PIXI.Sprite(PIXI.Texture.WHITE)
+    block.x = bx
+    block.y = by
+    block.width = bw
+    block.height = bh
+    block.tint = bc
+    block.texture = bi
+    //terrain.addChild(block)
     
     var b = new DKblock()
     b.sprite = block
@@ -620,6 +644,7 @@ window.addEventListener("keydown", function(e) {
     // if (e.key == "2"){unloadlevel()}
     // if (e.key == "1"){loadlevel1()}
     if (e.key == "r"){reloadlevel()}
+    if (e.key == "p"){goinaudio()}
     if (e.key == "]"){makeblock(f.x,f.y+f.height,f.width,f.height)}
 
 })
@@ -782,11 +807,20 @@ var jumpy = ()=>{
 
 var wis = (block)=>{
     var s = block.sprite
+    var p = {x: s.x, y:s.y}
+    var parent = s.parent
+    while (parent != terrain)
+    {
+        p.x += parent.x
+        p.y += parent.y
+        console.log('practical position: ' + p.x + ' ' + p.y)
+        parent = parent.parent
+    }
 
-    var blockright = Math.abs(f.x - s.x - s.width)
-    var blockleft = Math.abs(f.x + f.width - s.x)
-    var blockbottom = Math.abs(f.y - s.y - s.height)
-    var blocktop = Math.abs(f.y + f.width - s.y)
+    var blockright = Math.abs(f.x - p.x - s.width)
+    var blockleft = Math.abs(f.x + f.width - p.x)
+    var blockbottom = Math.abs(f.y - p.y - s.height)
+    var blocktop = Math.abs(f.y + f.width - p.y)
     var sidez = [blockright, blockleft, blockbottom, blocktop]
     
     var mincollision = 0
@@ -795,10 +829,10 @@ var wis = (block)=>{
     if (blocktop < sidez[mincollision]){mincollision = 3}
 
     
-    if (f.x < s.x + s.width &&
-        f.x + f.width > s.x &&
-        f.y < s.y + s.height &&
-        f.y + f.width > s.y)
+    if (f.x < p.x + s.width &&
+        f.x + f.width > p.x &&
+        f.y < p.y + s.height &&
+        f.y + f.width > p.y)
         
         {
             block.onCollision()
@@ -808,6 +842,9 @@ var wis = (block)=>{
                 speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0 ; frog.tint = 0xFFFFFF}}
             if (block.collectible){s.y = 800}
             if (block.door != null){block.door.sprite.y = 800}
+            if (block.launch[0] > 0) {excessSpeedXleft = 0 ; excessSpeedXright = block.launch[0]}
+            if (block.launch[0] < 0) {excessSpeedXright = 0 ; excessSpeedXleft = block.launch[0]}
+            if (block.launch[1] != 0) {speedY = block.launch[1]}
             if (block.bounce){speedY = 100}
             if (block.gravityup){accelY = 20 ; speedY = 45}
             if (block.gravitydown){accelY = -20 ; speedY = -45}
@@ -825,32 +862,32 @@ var wis = (block)=>{
             // }
             if (block.touchable){
                 if (accelY < 0){
-                    if (mincollision == 0){f.x = s.x + s.width  ; excessSpeedXright = 0 ; excessSpeedXleft = 0}
-                    if (mincollision == 1){f.x = s.x - f.width  ; excessSpeedXright = 0 ; excessSpeedXleft = 0}
-                    if (mincollision == 2){f.y = s.y + s.height ; if (speedY > 0){speedY = -(0.5 * speedY)}}
+                    if (mincollision == 0){f.x = p.x + s.width  }
+                    if (mincollision == 1){f.x = p.x - f.width  }
+                    if (mincollision == 2){f.y = p.y + s.height ; if (speedY > 0){speedY = -(0.5 * speedY)}}
                     if (mincollision == 3){
-                        f.y = s.y - f.height ; 
+                        f.y = p.y - f.height ; 
                         if (speedY < 0){speedY = 0} ; 
                         if (speedY == 0 && movingUp){jumpy()} 
-                        f.standingOnPosition = [s.x, s.y] 
+                        f.standingOnPosition = [p.x, p.y] 
                         f.standingOn = block; 
                     }
                 }
                 else {
-                    if (mincollision == 0){f.x = s.x + s.width}
-                    if (mincollision == 1){f.x = s.x - f.width}
+                    if (mincollision == 0){f.x = p.x + s.width}
+                    if (mincollision == 1){f.x = p.x - f.width}
                     if (mincollision == 2){
-                        f.y = s.y + s.height; 
+                        f.y = p.y + s.height; 
                         if (speedY > 0){speedY = 0}; 
                         if (speedY == 0 && movingUp){jumpy()}; 
-                        f.standingOnPosition = [s.x, s.y] 
+                        f.standingOnPosition = [p.x, p.y] 
                         f.standingOn = block; 
                     }     
                     if (mincollision == 3){f.y = s.y - f.height ; if (speedY < 0){speedY = -(0.5 * speedY)}}
                 }
             }
         } else {
-            if (f.standingOn == block && Math.abs(f.y - (s.y - f.height)) > 0.2) {
+            if (f.standingOn == block && Math.abs(f.y - (p.y - f.height)) > 0.2) {
                 f.standingOn = null
                 // ice
                 if (block.ice > 0) {
@@ -865,14 +902,25 @@ var wis = (block)=>{
         }
 
         if (block.baseMovementPath != null) {
-            var perc = (((Date.now()-timer)/1000)/block.baseMovementDuration) % 1.0
-            perc = block.baseMovementReverse 
-                ? (perc > 0.5 ? 1.0 - (perc - 0.5)*2 : perc * 2) 
-                : perc
-
-            var newPos = block.baseMovementPath.getPosition(perc)
-            s.x = newPos[0]
-            s.y = newPos[1]
+            if (block.alwaysMove) {
+                var perc = (((Date.now()-timer)/1000)/block.baseMovementDuration) % 1.0
+                perc = block.baseMovementReverse 
+                    ? (perc > 0.5 ? 1.0 - (perc - 0.5)*2 : perc * 2) 
+                    : perc
+    
+                var newPos = block.baseMovementPath.getPosition(perc)
+                s.x = newPos[0]
+                s.y = newPos[1]
+            } else if (block.movementStartTime != -1) {
+                var perc = (((Date.now()-block.movementStartTime)/1000)/block.baseMovementDuration)
+                perc = Math.min(perc, 1)
+                perc = block.baseMovementReverse 
+                    ? (perc > 0.5 ? 1.0 - (perc - 0.5)*2 : perc * 2) 
+                    : perc
+                var newPos = block.baseMovementPath.getPosition(perc)
+                s.x = newPos[0]
+                s.y = newPos[1]
+            }
         }
         
 }
@@ -1326,11 +1374,15 @@ blox = []
 var reloadlevel = ()=>{
     f = new DKplayer()
     unloadlevel()
-    if (menu.levelbuttons[0].y == 4000){loadlevel1()}
-    if (menu.levelbuttons[1].y == 4000){loadlevel2()}
-    if (menu.levelbuttons[2].y == 4000){loadlevel3()}
-    if (menu.levelbuttons[3].y == 4000){loadlevel4()}
-    if (menu.levelbuttons[4].y == 4000){loadlevel5()}
+    if (worldCode == 'levelpond') {
+        loadleveldapond()
+    } else {
+        if (menu.levelbuttons[0].y == 4000){loadlevel1()}
+        if (menu.levelbuttons[1].y == 4000){loadlevel2()}
+        if (menu.levelbuttons[2].y == 4000){loadlevel3()}
+        if (menu.levelbuttons[3].y == 4000){loadlevel4()}
+        if (menu.levelbuttons[4].y == 4000){loadlevel5()}
+    }
 
 }
 

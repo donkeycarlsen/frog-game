@@ -13,3 +13,18 @@ body {
     margin-right: 5px;
 }
 
+.game-and-watch {
+    display: flex;
+        align-items: flex-start;
+}
+
+.game-container {
+    flex: 1;
+}
+
+.leaderboard-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 250px; /* Adjust the width as needed */
+}

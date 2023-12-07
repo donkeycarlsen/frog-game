@@ -139,7 +139,16 @@ class DKmenu {
         this.container.addChild(level5button)
         this.levelbuttons.push(level5button)
 
-
+        const levelpondbutton = new PIXI.Sprite(PIXI.Texture.WHITE)
+        levelpondbutton.x = 1040
+        levelpondbutton.y = 150 + 240
+        levelpondbutton.zIndex = 0
+        levelpondbutton.width = 160
+        levelpondbutton.height = 160
+        levelpondbutton.tint = 0xFFFFFF
+        levelpondbutton.interactive = true
+        this.container.addChild(levelpondbutton)
+        this.levelbuttons.push(levelpondbutton)
     }
 
     loadmultiplayermenu = ()=>{
@@ -197,5 +206,14 @@ class DKmenu {
         level5button.interactive = true
         this.container.addChild(level5button)
         this.levelbuttons.push(level5button)
+    }
+
+    unloadMenu = () => {
+        this.backgrounds.forEach((bg, bgind) => {
+            bg.y = 3000
+        })
+        this.levelbuttons.forEach((lvlb, lvlbind) => {
+            lvlb.y = 3000
+        })
     }
 }

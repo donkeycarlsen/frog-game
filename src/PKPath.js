@@ -13,9 +13,12 @@ class PKPath {
     linearPosition = () => (perc => perc)
     easeInPosition = (factor) => (perc => (Math.pow(perc, factor)))
     easeOutPosition = (factor) => (perc => (Math.pow(perc, 1/factor)))
+    
     easeInAndOutPosition = (factor) => (perc => {
-        var sqt = perc * perc;
-        return sqt / (2.0 * (sqt - perc) + 1.0);
+        var useperc = perc < 0.5 ? perc : 1 - perc
+        var sqt = Math.pow(useperc, factor);
+        var val =  sqt / (2.0 * (sqt - useperc) + 1.0)
+        return perc < 0.5 ? val : -val+1
     })
     sinwobble = (percfunc, amplitude, periods) => (
         (perc) => {
@@ -208,6 +211,7 @@ class PKPath {
                 if (distance == 0) 
                     return this.shiftPt(startPt.position, this.shift);
                 var intermediatePercent = (percent - startPt.startPercent) / distance
+                if (nextPt.percfunc != undefined) intermediatePercent = nextPt.percfunc(intermediatePercent)
                 var fin = this.blendPositions(startPt.position, nextPt.position, intermediatePercent)
                 return this.shiftPt(this.shiftPt(fin, toffset), this.shift);
             } else if (nextPt.type == 'bezier') {
@@ -221,6 +225,7 @@ class PKPath {
                 if (distance == 0) 
                     return this.shiftPt(startPt.position, this.shift);
                 var intermediatePercent = (percent - startPt.startPercent) / distance
+                if (nextPt.percfunc != undefined) intermediatePercent = nextPt.percfunc(intermediatePercent)
                 return this.shiftPt(this.shiftPt(this.bezier(allPts, intermediatePercent), toffset), this.shift)
             }
 

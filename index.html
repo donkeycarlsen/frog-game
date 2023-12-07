@@ -14,27 +14,37 @@
         <input type="text" id ="usernameInput" value="Frog"></input>
     </div>
     <br/>
+    
+    <!--<input type="file" id="fileInput">-->
+
+    <div class="game-container">
+        <!-- Pixi.js canvas -->
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/socket.io-client/dist/socket.io.js"></script>
+    <!--<script type="text/javascript" src="src/audioaudio.js"></script>-->
     <script type="text/javascript" src="src/PKPath.js"></script>
     <script type="text/javascript" src="src/network.js"></script>
     <script type="text/javascript" src="src/menu.js"></script>
+    <script type="text/javascript" src="src/levels/dapond.js"></script>
     <script type="text/javascript" src="src/frog.js"></script>
 
-    <h3>Leaderboard:</h3>
-    <table border="1" id="leaderboard-body">
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Time</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>No one</td>
-                <td>grow up</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="leaderboard-container">
+        <h3>Leaderboard:</h3>
+        <table border="1" id="leaderboard-body">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>No one</td>
+                    <td>grow up</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
