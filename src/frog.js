@@ -267,7 +267,8 @@ const texture8 = PIXI.Texture.from('src/assets/block4-4.png',{wrapMode:PIXI.WRAP
 const texture9 = PIXI.Texture.from('src/assets/block4-5.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture9)
 const texture10 = PIXI.Texture.from('src/assets/block4-6.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture10)
 const texture11 = PIXI.Texture.from('src/assets/block5.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture11)
-
+const texture12 = PIXI.Texture.from('src/assets/grayflag.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture12)
+const texture13 = PIXI.Texture.from('src/assets/greenflag.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture13)
 
 
 
@@ -688,6 +689,7 @@ app.ticker.add((delta) => {
     }
 })
 
+var cpflags = []
 
 var started = false
 var finished = false
@@ -750,6 +752,11 @@ app.ticker.add((delta) => {
         handlePlayerCollision(p)
     });
 
+    // checkpoint flags
+
+    
+
+
    
    //update camera
 
@@ -791,6 +798,8 @@ app.ticker.add((delta) => {
     else (frog.texture = frogtextures[0])
     frog.x = f.x + f.width/2
     frog.y = f.y + f.height/2
+
+    console.log(cpflags)
 
 })
 
@@ -1307,15 +1316,14 @@ var loadlevel2 = ()=>{
     makeblock(1380+190,-330-70,20,140,0xEDEEC0)
 
     orbblock(2030,-360,50,50,0xFFFF00)
-    checkpointblock(2345,-600,210,400,1,2425,-250,1)
+    checkpointblock(2345,-600,210,400,0,2425,-250,1)
+    
+    textureover(2350,-300,66,100,textures[12])
+    cpflags.push(blox[blox.length - 1])
 
     layoutblock(2345,-200,210,870,1,0xFFFFFF)
-    layoutblock(2465,0,210,670,1,0xFFFFFF)
-    layoutblock(2585,200,210,470,1,0x00FFFF)
-    layoutblock(2705,400,420,270,1,0xFFFF00)
-    layoutblock(2945,200,210,470,1,0xFF00FF)
-    layoutblock(2705,400,330,270,1,0xFFFF00)
-    layoutblock(2705,-600,210,500,1,0xFFFFFF)
+
+
 
     // layoutblock()
 
