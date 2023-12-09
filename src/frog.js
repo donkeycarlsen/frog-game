@@ -31,6 +31,7 @@ var menu = new DKmenu(gui)
 menu.loadbackground()
 menu.loadmainmenu()
 
+var levelloader = null
 menu.buttons[0].on('click', (event) => {
     menu.buttons[0].y = 3000 ; menu.other[0].y = 3000
     menu.loadsecondmenu()
@@ -43,31 +44,37 @@ menu.buttons[0].on('click', (event) => {
             menu.levelbuttons[0].on('click', (event) =>{
                 menu.unloadMenu()
                 worldCode = 'level1'
+                levelloader = loadlevel1
                 loadlevel1()
             })
             menu.levelbuttons[1].on('click', (event) =>{
                 menu.unloadMenu()
                 worldCode = 'level2'
+                levelloader = loadlevel2
                 loadlevel2()
             })
             menu.levelbuttons[2].on('click', (event) =>{
                 menu.unloadMenu()
                 worldCode = 'level3'
+                levelloader = loadlevel3
                 loadlevel3() ; music[0].play()
             })
             menu.levelbuttons[3].on('click', (event) =>{
                 menu.unloadMenu()
                 worldCode = 'level4'
+                levelloader = loadlevel4
                 loadlevel4()
             })
             menu.levelbuttons[4].on('click', (event) =>{
                 menu.unloadMenu()
                 worldCode = 'level5'
+                levelloader = loadlevel5
                 loadlevel5()
             })
             menu.levelbuttons[5].on('click', (event) =>{
                 menu.unloadMenu()
                 worldCode = 'levelpond'
+                levelloader = loadleveldapond
                 loadleveldapond()
             })
 
@@ -81,26 +88,31 @@ menu.buttons[0].on('click', (event) => {
             menu.levelbuttons[0].on('click', (event) =>{
                 menu.unloadMenu()
                 worldCode = 'level1online'
+                levelloader = loadlevel1
                 loadlevel1()
             })
             menu.levelbuttons[1].on('click', (event) =>{
                 menu.unloadMenu()
                 worldCode = 'level2online'
+                levelloader = loadlevel2
                 loadlevel2()
             })
             menu.levelbuttons[2].on('click', (event) =>{
                 menu.unloadMenu()
                 worldCode = 'level3online'
+                levelloader = loadlevel3
                 loadlevel3() ; music[0].play()
             })
             menu.levelbuttons[3].on('click', (event) =>{
                 menu.unloadMenu()
                 worldCode = 'level4online'
+                levelloader = loadlevel4
                 loadlevel4()
             })
             menu.levelbuttons[4].on('click', (event) =>{
                 menu.unloadMenu()
                 worldCode = 'level5online'
+                levelloader = loadlevel5
                 loadlevel5()
             })
     
@@ -645,7 +657,6 @@ window.addEventListener("keydown", function(e) {
     // if (e.key == "2"){unloadlevel()}
     // if (e.key == "1"){loadlevel1()}
     if (e.key == "r"){reloadlevel()}
-    if (e.key == "p"){goinaudio()}
     if (e.key == "]"){makeblock(f.x,f.y+f.height,f.width,f.height)}
 
 })
@@ -1382,16 +1393,7 @@ blox = []
 var reloadlevel = ()=>{
     f = new DKplayer()
     unloadlevel()
-    if (worldCode == 'levelpond') {
-        loadleveldapond()
-    } else {
-        if (menu.levelbuttons[0].y == 4000){loadlevel1()}
-        if (menu.levelbuttons[1].y == 4000){loadlevel2()}
-        if (menu.levelbuttons[2].y == 4000){loadlevel3()}
-        if (menu.levelbuttons[3].y == 4000){loadlevel4()}
-        if (menu.levelbuttons[4].y == 4000){loadlevel5()}
-    }
-
+    levelloader()
 }
 
 console.log("booty butt cheeks!")
