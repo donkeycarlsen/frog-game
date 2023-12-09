@@ -264,8 +264,6 @@ f.sprite = frog
 // const frogskin = new PIXI.Sprite.from(currentskin)
 // frog.addChild(frogskin)
 
-
-
 var textures = []
 const texture0 = PIXI.Texture.from('src/assets/texture0.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture0)
 const texture1 = PIXI.Texture.from('src/assets/block1-3.png',{wrapMode:PIXI.WRAP_MODES.MIRRORED_REPEAT}); textures.push(texture1)
@@ -765,7 +763,11 @@ app.ticker.add((delta) => {
 
     // checkpoint flags
 
-    
+    cpflags.forEach((cp, cpind) => {
+        if (f.checkpoint > cpind)
+        {cp.sprite.texture = textures[13]}
+
+    });
 
 
    
@@ -810,7 +812,6 @@ app.ticker.add((delta) => {
     frog.x = f.x + f.width/2
     frog.y = f.y + f.height/2
 
-    console.log(cpflags)
 
 })
 
@@ -1211,7 +1212,7 @@ var loadlevel2 = ()=>{
 
     var loadlevel3 = ()=>{
     // spawn / finish
-    spawnx = 50 ; spawny = 620 ; finishx = 4070 ; finishy = 670 ; started = false ; finished = false
+    spawnx = 50 ; spawny = 620 ; finishx = 4070 ; finishy = 670 ; started = false ; finished = false ; cpflags = []
     // frog
     f.x = spawnx ; f.y = spawny ; speedY = 0 ; accelY = -20 ; excessSpeedXleft = 0 ; excessSpeedXright = 0; frog.tint = 0xFFFFFF ; //var invinciblefrog.tintforlevel = 0xFFFFFF
     // camera
@@ -1327,14 +1328,12 @@ var loadlevel2 = ()=>{
     makeblock(1380+190,-330-70,20,140,0xEDEEC0)
 
     orbblock(2030,-360,50,50,0xFFFF00)
-    checkpointblock(2345,-600,210,400,0,2425,-250,1)
+
+    checkpointblock(2345,-600,210,300,0,2425,-250,1)
+    layoutblock(2345,-300,210,870,1,0xFFFFFF)
     
-    textureover(2350,-300,66,100,textures[12])
+    textureover(2350,-400,66,100,textures[12])
     cpflags.push(blox[blox.length - 1])
-
-    layoutblock(2345,-200,210,870,1,0xFFFFFF)
-
-
 
     // layoutblock()
 
