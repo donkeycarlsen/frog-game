@@ -835,6 +835,7 @@ connection.connect()
 const networkElements = new PIXI.Container(PIXI.Texture.WHITE)
 level.addChild(networkElements)
 connection.levelElements = networkElements
+var serversWorldCode = 'offline'
 
 var canjumpy = true
 
@@ -845,6 +846,11 @@ app.ticker.add((delta) => {
     if (timeSinceLastUpdateServer > serverUpdateDelay && multiplayer && worldCode != 'offline') {
         timeSinceLastUpdateServer = 0
         connection.sendPosition(worldCode, f.x, f.y, 0, 0)
+    } else {
+        if (worldCode != 'offline' && serversWorldCode != worldCode) {
+            serversWorldCode = worldCode
+            connection.sendPosition(worldCode, -2000, -2000, 0, 0)
+        }
     }
 })
 
