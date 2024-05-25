@@ -3,7 +3,19 @@ const app = new PIXI.Application({
 })
 document.querySelector('.game-container').appendChild(app.view)
 
+
+
+const canvas = app.view;
+
+canvas.addEventListener('mousemove', (event) => {
+mousePosition = [event.offsetX, event.offsetY];
+});
+
+var mousePosition = [0,0];
+
 var inputElement = document.getElementById("usernameInput");
+
+
 
 function getCookie(name) {
     const cookies = document.cookie.split(';');
@@ -74,8 +86,10 @@ menu.buttons[0].on('click', (event) => {
             menu.levelbuttons[5].on('click', (event) =>{
                 menu.unloadMenu()
                 worldCode = 'levelpond'
-                levelloader = loadleveldapond
-                loadleveldapond()
+                // levelloader = loadleveldapond
+                // loadleveldapond()
+                levelloader = loadlevelbyname
+                loadlevelbyname('MAP2')
             })
 
     });
@@ -157,6 +171,9 @@ var currentlevelbackground = level3bg
 class DKblock {
     sprite = null
     touchable = true
+
+    solid = [1,1,1,1]
+
     collectible = false
     ouchie = false
     door = null
@@ -212,13 +229,124 @@ class DKplayer {
     sprite = null
     invincible = false
     off = false
+    tongue = null
 
     checkpoint = 0
 
     standingOn = null
     standingOnPosition = [0,0]
 
-    constructor(){}
+    constructor(){this.tongue = new DKdattongue()}
+}
+
+
+
+class DKdattongue {
+    sprite = null
+    state = 0
+    static indamouf = 0
+    static extending = 1
+    static retracting = 2
+    static stuck = 3
+    maxlength = 300
+    speed = 12
+    maxheight = 10
+    target = [0,0]
+    slurprequested = false
+    grapplesremaining = 1
+
+    update = ()=>{
+        if (this.state == DKdattongue.indamouf){
+            // if (frog.scale.x == 1){this.sprite.x = 18}
+            // else if (frog.scale.x == -1){this.sprite.x = -18}
+            if (this.slurprequested && this.grapplesremaining >= 0){this.slurprequested = false ; this.slurp()}
+            var tonguerelativetofrog = [f.x + level.x - mousePosition[0] + 25 + this.sprite.x, f.y + level.y - mousePosition[1] + 25 + this.sprite.y]
+            if (tonguerelativetofrog[0] >= 0){this.sprite.rotation = Math.atan(tonguerelativetofrog[1]/tonguerelativetofrog[0])+Math.PI}
+            else {this.sprite.rotation = Math.atan(tonguerelativetofrog[1]/tonguerelativetofrog[0])}
+        }
+
+        if (this.state == DKdattongue.extending){
+            if (this.slurprequested){this.slurprequested = false ; this.slurp()}
+            if (this.sprite.width < this.maxlength){this.sprite.width += this.speed}
+            else {this.state = DKdattongue.retracting}
+                var tip = this.calculatetippause()
+                blox.forEach(b => testcollision(b, [tip[0],tip[1], 0,0], this.handlecollision))
+                }
+
+        if (this.state == DKdattongue.retracting)
+            {   if(this.sprite.width > 100){this.slurprequested = false}
+                if(this.sprite.width > 0){this.sprite.width -= this.speed}
+                else{this.state = DKdattongue.indamouf}}
+        
+        if (this.state == DKdattongue.stuck){
+            this.grapplesremaining = 0
+            if (this.sprite.width > 0){
+                var tip = this.calculatetippause()
+                this.sprite.width -= this.speed
+                var frogdt = [tip[0]-f.x-(f.width/2),tip[1]-f.y-(f.height/2)]
+                f.x += frogdt[0]
+                f.y += frogdt[1]
+                this.sprite.x -= frogdt[0]
+                this.sprite.y -= frogdt[1]
+            }
+            else if (this.sprite.width <= 0){
+                this.state = DKdattongue.indamouf
+                this.sprite.anchor.set(0,0.5)
+                this.sprite.x = 0
+                this.sprite.y = 0
+                speedX = (this.speed)*Math.cos(this.sprite.rotation)
+                speedY = -(this.speed)*Math.sin(this.sprite.rotation)*8
+            }
+        }
+
+
+        this.sprite.height = this.maxheight - this.sprite.width/(this.maxlength/this.maxheight*2)
+        console.log(this.sprite.anchor.x)
+    }
+
+    slurp = ()=>{
+        if (this.state == DKdattongue.indamouf){this.state = DKdattongue.extending}
+        else if (this.state == DKdattongue.extending){this.state = DKdattongue.retracting}
+        console.log('slurp,',this.state)
+    }
+
+    calculatetippause = (relative=false)=>{
+        var frogadjust = [0,0]
+        var anchormultiplier = 1
+        if(this.sprite.anchor.x == 1){anchormultiplier = -1}
+        if(!relative){frogadjust = [f.x + f.width/2, f.y + f.height/2]}
+        return[
+            frogadjust[0] + this.sprite.x + (this.sprite.width * anchormultiplier * Math.cos(this.sprite.rotation)),
+            frogadjust[1] + this.sprite.y + (this.sprite.width * anchormultiplier * Math.sin(this.sprite.rotation))
+        ]
+    }
+
+    handlecollision = (block,side,pathout)=>{
+        var tip = this.calculatetippause(true)
+        this.sprite.x = tip[0]
+        this.sprite.y = tip[1]
+        this.sprite.anchor.set(1,0.5)
+        this.state = DKdattongue.stuck
+    }
+
+
+
+
+
+
+
+    constructor(){
+        this.sprite = new PIXI.Sprite(PIXI.Texture.WHITE)
+        this.sprite.tint = 0xff5999
+        this.sprite.anchor.set(0,0.5)
+        this.sprite.x = 0 // 18
+        this.sprite.y = 0 // -8
+        this.sprite.width = 0
+        this.sprite.height = 5
+        this.sprite.zIndex = -3
+        this.sprite.sortableChildren = true
+    }
+
 }
 
 
@@ -244,22 +372,35 @@ const frogtexturejump3 = PIXI.Texture.from('src/assets/frogjump3.png')
 var frogtextures = [frogtexturesitting,frogtexturejump1,frogtexturejump2,frogtexturejump3]
 // var currentskin = frogtextures[0]
 
+const frogcon = new PIXI.Container(PIXI.Texture.WHITE)
+
+
+level.addChild(frogcon)
+
+
+
 var f = new DKplayer()
 
-
 const frog = new PIXI.Sprite(PIXI.Texture.WHITE)
-frog.tint = 0x009600
+frog.tint = 0xFFFFFF
 f.width = 50
 f.height = 50
 f.x = -2000     // 50
 f.y = 1000    // 670
+f.zIndex = 10
 // frog.width = 50
 // frog.height = 50
-frog.anchor.set(0.5)
+frog.anchor.set(0.5,0.5)
 frog.texture = frogtextures[0]
-level.addChild(frog)
+frogcon.addChild(frog)
 
 f.sprite = frog
+
+var tongue = new DKdattongue()
+
+
+frogcon.addChild(tongue.sprite)
+frogcon.sortableChildren = true
 
 // const frogskin = new PIXI.Sprite.from(currentskin)
 // frog.addChild(frogskin)
@@ -646,18 +787,27 @@ var offpowerup = (bx,by,bw=40,bh=40,bc=0xFFFFFF)=>{
 var blox = []
 
 window.addEventListener("keydown", function(e) {
-   if (e.key == "ArrowRight"){movingRight = true}
-   if (e.key == "ArrowLeft"){movingLeft = true}
-   if (e.key == "d"){movingRight = true}
-   if (e.key == "a"){movingLeft = true}
-   if (e.key == "ArrowUp"){if(movingUp == false){timejumped = Date.now()} ; movingUp = true}
-   if (e.key == "w"){if(movingUp == false){timejumped = Date.now()} ; movingUp = true}
-    // if (e.key == "2"){unloadlevel()}
-    // if (e.key == "1"){loadlevel1()}
+
+    if (e.key == "ArrowRight"){movingRight = true}
+    if (e.key == "ArrowLeft"){movingLeft = true}
+    if (e.key == "d"){movingRight = true}
+    if (e.key == "a"){movingLeft = true}
+    if (e.key == "ArrowUp"){if(movingUp == false){timejumped = Date.now()} ; movingUp = true}
+    if (e.key == "w"){if(movingUp == false){timejumped = Date.now()} ; movingUp = true}
     if (e.key == "r"){reloadlevel()}
-    if (e.key == "]"){makeblock(f.x,f.y+f.height,f.width,f.height)}
+    if (e.key == "]"){makeblock(f.x,f.y+f.height,f.width,f.height,0xFF00FF)}
 
 })
+
+window.addEventListener("mousedown", (event) => {
+    if (event.button === 0){tongue.slurprequested = true}
+});
+
+document.oncontextmenu = rightClick; 
+function rightClick(clickEvent) { 
+    clickEvent.preventDefault(); 
+}
+
 // if(movingUp == false){timejumped = Date.now()}
 window.addEventListener("keyup", function(e) {
     if (e.key == "ArrowRight"){movingRight = false}
@@ -709,6 +859,8 @@ var finishy = 0
 
 app.ticker.add((delta) => {
 
+
+
     /// timer 
     if ((f.x != spawnx) || (f.y != spawny)){started = true}
     if ((started == true) && (finished == false)){timerdisplay.text=((Date.now()-timer)/1000)}
@@ -730,11 +882,18 @@ app.ticker.add((delta) => {
     }
     else {
         if (movingRight == movingLeft){speedX = 0}
-        else {if (movingRight){speedX = -50 ; frog.scale.x = 1}
-        if (movingLeft){speedX = 50 ; frog.scale.x = -1}}
+        else {
+            if (movingRight){speedX = -50 ; frog.scale.x = 1}
+            if (movingLeft){speedX = 50 ; frog.scale.x = -1}
+        }
     }
 
+    // dat tongue
 
+    tongue.update()
+
+
+    if (tongue.state == DKdattongue.stuck){speedX = 0 ; excessSpeedXleft = 0 ; excessSpeedXright = 0 ; speedY = 0}
 
     
     f.x -= (speedX * delta * 0.2) - (excessSpeedXright * delta * 0.2) - (excessSpeedXleft * delta * 0.2)
@@ -760,6 +919,11 @@ app.ticker.add((delta) => {
     networkElements.children.forEach(p => {
         handlePlayerCollision(p)
     });
+
+
+
+
+
 
     // checkpoint flags
 
@@ -797,6 +961,10 @@ app.ticker.add((delta) => {
 //    currentlevelbackground.y = Math.min(cameratop,-level.y)
 //    currentlevelbackground.y = Math.max(camerabot,-level.y)
 
+
+
+
+
    
     if (multiplayer && worldCode != 'offline')
         connection.renderFrogs()
@@ -809,9 +977,11 @@ app.ticker.add((delta) => {
 
     }
     else (frog.texture = frogtextures[0])
-    frog.x = f.x + f.width/2
-    frog.y = f.y + f.height/2
 
+
+    frogcon.x = f.x + f.width/2
+    frogcon.y = f.y + f.height/2
+// console.log(tongue.sprite.x,tongue.sprite.y)
 
 })
 
@@ -825,6 +995,52 @@ var jumpy = ()=>{
 
 
 }
+
+var testcollision = (block,rect,handler)=>{
+
+    var s = block.sprite
+    var p = {x: s.x, y:s.y}
+
+    var r = {x: rect[0], y: rect[1], w: rect[2], h: rect[3]}
+
+    var parent = s.parent
+    while (parent != terrain)
+    {
+        p.x += parent.x
+        p.y += parent.y
+        parent = parent.parent
+    }
+
+    var blockright = Math.abs(r.x - p.x - s.width)
+    var blockleft = Math.abs(r.x + r.w - p.x)
+    var blockbottom = Math.abs(r.y - p.y - s.height)
+    var blocktop = Math.abs(r.y + r.h - p.y)
+    var sidez = [blockright, blockleft, blockbottom, blocktop]
+    
+    var mincollision = 0
+    if (blockleft < sidez[mincollision]){mincollision = 1}
+    if (blockbottom < sidez[mincollision]){mincollision = 2}
+    if (blocktop < sidez[mincollision]){mincollision = 3}
+
+    var pathout = [0,0]
+    
+    if (r.x < p.x + s.width &&
+        r.x + r.w > p.x &&
+        r.y < p.y + s.height &&
+        r.y + r.h > p.y)
+        
+        {
+            if (block.touchable && block.solid[mincollision] == 1){
+                    if (mincollision == 0){pathout = [blockright, 0]}
+                    if (mincollision == 1){pathout = [-blockleft, 0]}
+                    if (mincollision == 2){pathout = [0, blockbottom]}
+                    if (mincollision == 3){pathout = [0, -blocktop]}
+                    handler(block,mincollision,pathout)
+            }
+        }
+}
+
+
 
 var wis = (block)=>{
     var s = block.sprite
@@ -841,7 +1057,7 @@ var wis = (block)=>{
     var blockright = Math.abs(f.x - p.x - s.width)
     var blockleft = Math.abs(f.x + f.width - p.x)
     var blockbottom = Math.abs(f.y - p.y - s.height)
-    var blocktop = Math.abs(f.y + f.width - p.y)
+    var blocktop = Math.abs(f.y + f.height - p.y)
     var sidez = [blockright, blockleft, blockbottom, blocktop]
     
     var mincollision = 0
@@ -881,7 +1097,7 @@ var wis = (block)=>{
             //     else {accelX = -20 ; if (speedX > 10){accelX = 25} ; if (speedX == 0){speedX = 0}}
                 
             // }
-            if (block.touchable){
+            if (block.touchable && block.solid[mincollision] == 1){
                 if (accelY < 0){
                     if (mincollision == 0){f.x = p.x + s.width  }
                     if (mincollision == 1){f.x = p.x - f.width  }
@@ -1329,11 +1545,13 @@ var loadlevel2 = ()=>{
 
     orbblock(2030,-360,50,50,0xFFFF00)
 
-    checkpointblock(2345,-600,210,300,0,2425,-250,1)
-    layoutblock(2345,-300,210,870,1,0xFFFFFF)
+    checkpointblock(2350,-600,210,300,0,2425,-250,1)
+    layoutblock(2345,-300,210,970,1,0xFFFFFF)
     
     textureover(2350,-400,66,100,textures[12])
     cpflags.push(blox[blox.length - 1])
+
+    layoutblock(2465,-370,210,1040,1,0xFF00FF)
 
     // layoutblock()
 
@@ -1392,7 +1610,28 @@ blox = []
 var reloadlevel = ()=>{
     f = new DKplayer()
     unloadlevel()
-    levelloader()
+    levelloader('MAP2')
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 console.log("booty butt cheeks!")
